@@ -1,7 +1,6 @@
 import datetime
 from enum import StrEnum
 
-from beanie import PydanticObjectId
 from pydantic import BaseModel
 
 
@@ -13,17 +12,19 @@ class DateFilter(BaseModel):
 
 
 class DisciplineFilter(BaseModel):
-    sport_id: PydanticObjectId
-    "Идентификатор вида спорта"
-    discipline_id: PydanticObjectId | None = None
-    "Идентификатор дисциплины"
+    sport: str
+    "Название вида спорта"
+    discipline: str | None = None
+    "Название дисциплины"
 
 
 class LocationFilter(BaseModel):
-    country_id: PydanticObjectId
-    "Идентификатор страны"
-    city_id: PydanticObjectId | None = None
-    "Идентификатор города"
+    country: str
+    "Название страны"
+    region: str | None = None
+    "Название региона"
+    city: str | None = None
+    "Название города"
 
 
 class MinMaxFilter(BaseModel):
