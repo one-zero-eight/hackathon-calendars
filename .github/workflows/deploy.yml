@@ -13,6 +13,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Install sshpass
+      run: sudo apt-get install -y sshpass
+      
     - name: Set up SSH connection
       run: |
         mkdir -p ~/.ssh
@@ -22,4 +25,4 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && ./deploy.sh
+        sshpass -p ${{ secrets.SSH_PASSWORD }} ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && ./deploy.sh"
