@@ -1,17 +1,47 @@
 import { $api } from "@/api";
 import { Button } from "@/components/ui/button.tsx";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Input } from "@/components/ui/input.tsx";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const { data: sports } = $api.useQuery("get", "/sports/");
+  const [search, setSearch] = useState("");
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate({
+      to: "/search",
+      // TODO: Add search query
+      // search: { search }
+    });
+  };
 
   return (
-    <div className="p-4">
-      <h2 className="mb-2 text-center text-2xl">Выбери свой вид спорта</h2>
+    <div className="flex flex-col gap-4 p-4">
+      <form onSubmit={onSubmit}>
+        <div className="flex h-[50vh] flex-col items-center justify-center gap-6">
+          <h2 className="text-4xl">Найди любое спортивное мероприятие!</h2>
+          <div className="flex w-full max-w-[600px] gap-2">
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Поиск"
+              className="max-w-[600px]"
+            />
+            <Button type="submit" variant="default">
+              Найти
+            </Button>
+          </div>
+        </div>
+      </form>
+
+      <h2 className="text-center text-2xl">Выбери свой вид спорта</h2>
       <div className="flex flex-wrap justify-center gap-2">
         {sports?.map((sport) => (
           <Button
