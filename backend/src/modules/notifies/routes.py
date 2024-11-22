@@ -1,4 +1,4 @@
-from beanie import PydanticObjectID
+from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 
 from src.api.exceptions import IncorrectCredentialsException
@@ -15,12 +15,12 @@ router = APIRouter(
 
 
 @router.post("/")
-async def create_notification(notification_create: NotificationCreate) -> PydanticObjectID:
+async def create_notification(notification_create: NotificationCreate) -> PydanticObjectId:
     return await notification_repository.create_notification(notification_create)
 
 
 @router.get("/{notification_id}")
-async def get_notification(notification_id: PydanticObjectID):
+async def get_notification(notification_id: PydanticObjectId):
     notification = await notification_repository.get_notificationч(notification_id)
     if not notification:
         raise HTTPException(status_code=404, detail="Notification not found")
