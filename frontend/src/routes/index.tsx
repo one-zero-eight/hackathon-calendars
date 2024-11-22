@@ -38,6 +38,19 @@ function RouteComponent() {
               Найти
             </Button>
           </div>
+
+          <div className="flex w-full max-w-[600px] flex-wrap justify-center gap-2">
+            {/* TODO: Add search query */}
+            <Button asChild type="button" variant="secondary">
+              <Link to="/search">На ближайший месяц</Link>
+            </Button>
+            <Button asChild type="button" variant="secondary">
+              <Link to="/search">На 3 месяца</Link>
+            </Button>
+            <Button asChild type="button" variant="secondary">
+              <Link to="/search">На полгода</Link>
+            </Button>
+          </div>
         </div>
       </form>
 
