@@ -12,6 +12,7 @@ class CreateUser(BaseSchema):
 
 class ViewUser(BaseSchema):
     id: PydanticObjectId
+    login: str
 
 
 class UserAuthData(BaseSchema):
