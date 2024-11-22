@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from src.api.exceptions import IncorrectCredentialsException
 from src.modules.notifies.repository import notification_repository
-from src.modules.notifies.scheams import NotificationCreate, NotificationResponse
+from src.modules.notifies.scheams import NotificationCreate
 
 router = APIRouter(
     prefix="/notify",
@@ -14,13 +14,13 @@ router = APIRouter(
 
 
 @router.post("/")
-async def create_notification(notification_create: NotificationCreate, response_model=int):
+async def create_notification(notification_create: NotificationCreate):
     return await notification_repository.create_notification(notification_create)
 
 
-@router.get("/{notification_id}", response_model=NotificationResponse)
+@router.get("/{notification_id}")
 async def get_notification(notification_id: int):
-    notification = await notification_repository.get(notification_id)
+    notification = await notification_repository.get_notificationч(notification_id)
     if not notification:
         raise HTTPException(status_code=404, detail="Notification not found")
     return notification
