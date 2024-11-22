@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 from src.api.exceptions import IncorrectCredentialsException
 from src.modules.events.repository import events_repository
-from src.modules.events.schemas import Filters, Pagination, Sort
+from src.modules.events.schemas import DisciplineFilter, Filters, LocationFilter, Pagination, Sort
 from src.storages.mongo.events import Event
 
 router = APIRouter(
@@ -62,3 +62,19 @@ async def search_events(filters: Filters, sort: Sort, pagination: Pagination) ->
         pages_total=1,
         events=events,
     )
+
+
+@router.get("/search/filters/locations", responses={200: {"description": "All locations"}})
+async def get_all_filters_locations() -> list[LocationFilter]:
+    """
+    Get all locations.
+    """
+    return []
+
+
+@router.get("/search/filters/disciplines", responses={200: {"description": "All disciplines"}})
+async def get_all_filters_disciplines() -> list[DisciplineFilter]:
+    """
+    Get all disciplines.
+    """
+    return []
