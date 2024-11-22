@@ -2,7 +2,7 @@ FROM node:22-alpine
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install
+RUN corepack enable pnpm && pnpm install
 COPY . .
 RUN pnpm build
 
