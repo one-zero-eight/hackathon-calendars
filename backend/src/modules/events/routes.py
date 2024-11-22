@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 from src.api.exceptions import IncorrectCredentialsException
 from src.modules.events.repository import events_repository
-from src.modules.events.schemas import DisciplineFilter, Filters, LocationFilter, Pagination, Sort
+from src.modules.events.schemas import Filters, Pagination, Sort
 from src.storages.mongo.events import Event
 
 router = APIRouter(
@@ -64,29 +64,63 @@ async def search_events(filters: Filters, sort: Sort, pagination: Pagination) ->
     )
 
 
+class RegionsFilterVariants(BaseModel):
+    region: str
+    "Название региона"
+    cities: list[str]
+    "Названия городов"
+
+
+class LocationsFilterVariants(BaseModel):
+    country: str
+    "Название страны"
+    regions: list[RegionsFilterVariants]
+    "Названия регионов"
+
+
 @router.get("/search/filters/locations", responses={200: {"description": "All locations"}})
-async def get_all_filters_locations() -> list[LocationFilter]:
+async def get_all_filters_locations() -> list[LocationsFilterVariants]:
     """
     Get all locations.
     """
     # From all 'location' fields of events, get unique values
-    locations: list[LocationFilter] = list()
+    countries: dict[str, dict[str, RegionsFilterVariants]] = {}
     for event in await events_repository.read_all():
         for location in event.location:
-            if location not in locations:
-                locations.append(LocationFilter(country=location.country, region=location.region, city=location.city))
-    return list(locations)
+            if location.country not in countries:
+                countries[location.country] = {}
+            if location.region not in countries[location.country]:
+                countries[location.country][location.region] = RegionsFilterVariants(region=location.region, cities=[])
+            if location.city not in countries[location.country][location.region].cities:
+                countries[location.country][location.region].cities.append(location.city)
+    return [
+        LocationsFilterVariants(
+            country=country,
+            regions=list(regions.values()),
+        )
+        for country, regions in countries.items()
+    ]
+
+
+class DisciplinesFilterVariants(BaseModel):
+    sport: str
+    "Название вида спорта"
+    disciplines: list[str]
+    "Названия дисциплин"
 
 
 @router.get("/search/filters/disciplines", responses={200: {"description": "All disciplines"}})
-async def get_all_filters_disciplines() -> list[DisciplineFilter]:
+async def get_all_filters_disciplines() -> list[DisciplinesFilterVariants]:
     """
     Get all disciplines.
     """
     # From all 'sport' and 'disciplines' fields of events, get unique values
-    disciplines: list[DisciplineFilter] = list()
+    sports: dict[str, DisciplinesFilterVariants] = {}
     for event in await events_repository.read_all():
-        for discipline in event.discipline:
-            if discipline not in disciplines:
-                disciplines.append(DisciplineFilter(sport=event.sport, discipline=discipline))
-    return list(disciplines)
+        if event.sport not in sports:
+            sports[event.sport] = DisciplinesFilterVariants(sport=event.sport, disciplines=event.discipline)
+        else:
+            for discipline in event.discipline:
+                if discipline not in sports[event.sport].disciplines:
+                    sports[event.sport].disciplines.append(discipline)
+    return list(sports.values())
