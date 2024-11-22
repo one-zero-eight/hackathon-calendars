@@ -17,8 +17,7 @@ function RouteComponent() {
     e.preventDefault();
     navigate({
       to: "/search",
-      // TODO: Add search query
-      // search: { search }
+      search: { filters: { query: search } },
     });
   };
 
@@ -42,13 +41,55 @@ function RouteComponent() {
           <div className="flex w-full max-w-[600px] flex-wrap justify-center gap-2">
             {/* TODO: Add search query */}
             <Button asChild type="button" variant="secondary">
-              <Link to="/search">На ближайший месяц</Link>
+              <Link
+                to="/search"
+                search={{
+                  filters: {
+                    date: {
+                      start_date: new Date().toISOString(),
+                      end_date: new Date(
+                        new Date().getTime() + 1000 * 60 * 60 * 24 * 30, // 30 days
+                      ).toISOString(),
+                    },
+                  },
+                }}
+              >
+                На ближайший месяц
+              </Link>
             </Button>
             <Button asChild type="button" variant="secondary">
-              <Link to="/search">На 3 месяца</Link>
+              <Link
+                to="/search"
+                search={{
+                  filters: {
+                    date: {
+                      start_date: new Date().toISOString(),
+                      end_date: new Date(
+                        new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 3, // 90 days
+                      ).toISOString(),
+                    },
+                  },
+                }}
+              >
+                На 3 месяца
+              </Link>
             </Button>
             <Button asChild type="button" variant="secondary">
-              <Link to="/search">На полгода</Link>
+              <Link
+                to="/search"
+                search={{
+                  filters: {
+                    date: {
+                      start_date: new Date().toISOString(),
+                      end_date: new Date(
+                        new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 6, // 180 days
+                      ).toISOString(),
+                    },
+                  },
+                }}
+              >
+                На полгода
+              </Link>
             </Button>
           </div>
         </div>
