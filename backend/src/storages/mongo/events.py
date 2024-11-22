@@ -2,6 +2,9 @@ __all__ = ["Event", "EventSchema"]
 
 import datetime
 
+import pymongo
+from pymongo import IndexModel
+
 from src.modules.events.schemas import Gender
 from src.pydantic_base import BaseSchema
 from src.storages.mongo.__base__ import CustomDocument
@@ -50,4 +53,16 @@ class EventSchema(BaseSchema):
 
 class Event(EventSchema, CustomDocument):
     class Settings:
-        pass
+        indexes = [
+            IndexModel(
+                [
+                    ("title", pymongo.TEXT),
+                    ("sport", pymongo.TEXT),
+                    ("location.country", pymongo.TEXT),
+                    ("location.region", pymongo.TEXT),
+                    ("location.city", pymongo.TEXT),
+                ],
+                default_language="russian",
+                name="text_index",
+            ),
+        ]

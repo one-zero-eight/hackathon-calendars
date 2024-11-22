@@ -62,12 +62,12 @@ async def search_events(filters: Filters, sort: Sort, pagination: Pagination) ->
     """
     Search events.
     """
-    events = await events_repository.read_all()
+    events = await events_repository.read_with_filters(filters, sort, pagination)
     return SearchEventsResponse(
         filters=filters,
         sort=sort,
         pagination=pagination,
-        page=1,
+        page=pagination.page_no,
         pages_total=1,
         events=events,
     )
