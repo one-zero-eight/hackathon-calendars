@@ -1,5 +1,5 @@
 from src.modules.notifies.scheams import NotificationCreate
-from storages.mongo.notifies import Notification
+from src.storages.mongo.notifies import Notification
 
 
 class NotificationRepository:
