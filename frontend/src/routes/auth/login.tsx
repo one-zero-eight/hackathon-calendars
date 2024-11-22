@@ -24,12 +24,8 @@ function RouteComponent() {
     reset: resetLogin,
     isPending: isPendingLogin,
   } = $api.useMutation("post", "/users/login", {
-    onSettled: () => {
-      queryClient.clear();
-    },
-    onSuccess: () => {
-      navigate({ to: "/" });
-    },
+    onSettled: () => queryClient.resetQueries(),
+    onSuccess: () => navigate({ to: "/" }),
   });
   const {
     mutate: performRegister,
@@ -37,12 +33,8 @@ function RouteComponent() {
     reset: resetRegister,
     isPending: isPendingRegister,
   } = $api.useMutation("post", "/users/register", {
-    onSettled: () => {
-      queryClient.clear();
-    },
-    onSuccess: () => {
-      navigate({ to: "/" });
-    },
+    onSettled: () => queryClient.resetQueries(),
+    onSuccess: () => navigate({ to: "/" }),
   });
 
   const onSubmit = (e: FormEvent) => {
