@@ -2,8 +2,8 @@ name: Deployment
 
 on:
   push:
-    paths:
-      - 'backend/**'
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -15,7 +15,7 @@ jobs:
 
     - name: Install sshpass
       run: sudo apt-get install -y sshpass
-      
+
     - name: Set up SSH connection
       run: |
         mkdir -p ~/.ssh
@@ -23,6 +23,33 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-    - name: Deploy to server
+    - name: Install Docker and Docker Compose
       run: |
-        sshpass -v -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && ./deploy.sh"
+        sudo apt-get update
+        sudo apt-get install -y docker.io docker-compose
+
+    - name: Build Docker images using Docker Compose
+      run: |
+        docker-compose build
+
+    - name: Get all built Docker image IDs
+      id: get_image_ids
+      run: |
+        IMAGE_IDS=$(docker-compose images -q | tr '\n' ' ')
+        echo "IMAGE_IDS=$IMAGE_IDS" >> $GITHUB_ENV
+
+    - name: Save all Docker images to a tarball
+      run: |
+        docker save -o myapp_images.tar ${{ env.IMAGE_IDS }}
+
+    - name: Compress the tarball
+      run: |
+        gzip myapp_images.tar
+
+    - name: Send compressed tarball over SSH
+      run: |
+        sshpass -v -p "${{ secrets.SSH_PASSWORD }}" scp myapp_images.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
+
+    - name: Load Docker images on the remote server
+      run: |
+        sshpass -v -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && gunzip -c myapp_images.tar.gz | docker load && docker-compose down && docker-compose up -d"
