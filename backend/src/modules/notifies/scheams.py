@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class NotificationCreate(BaseModel):
     event_title: str
     notification_options: dict
-    target_date: datetime.datetime
+    target_date: datetime
     user_id: int
     sent: bool = False
 
@@ -15,6 +15,6 @@ class NotificationResponse(BaseModel):
     id: int
     event_title: str
     notification_options: dict
-    target_date: datetime.datetime
+    target_date: datetime
     user_id: int
     sent: bool = False
