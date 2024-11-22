@@ -74,7 +74,7 @@ async def search_events(filters: Filters, sort: Sort, pagination: Pagination) ->
 
 
 class RegionsFilterVariants(BaseModel):
-    region: str
+    region: str | None
     "Название региона"
     cities: list[str]
     "Названия городов"
