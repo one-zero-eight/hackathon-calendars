@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from src.api.exceptions import IncorrectCredentialsException
 from src.modules.events.repository import events_repository
 from src.modules.events.schemas import Filters, Pagination, Sort
+from src.modules.sports.repository import sports_repository
 from src.storages.mongo.events import Event
 
 router = APIRouter(
@@ -124,13 +125,11 @@ async def get_all_filters_disciplines() -> list[DisciplinesFilterVariants]:
     Get all disciplines.
     """
     # From all 'sport' and 'disciplines' fields of events, get unique values
-    # TODO: Write Mongo request
-    sports: dict[str, DisciplinesFilterVariants] = {}
-    for event in await events_repository.read_all():
-        if event.sport not in sports:
-            sports[event.sport] = DisciplinesFilterVariants(sport=event.sport, disciplines=event.discipline)
-        else:
-            for discipline in event.discipline:
-                if discipline not in sports[event.sport].disciplines:
-                    sports[event.sport].disciplines.append(discipline)
-    return list(sports.values())
+    sports = await sports_repository.read_all()
+    return [
+        DisciplinesFilterVariants(
+            sport=sport.sport,
+            disciplines=sport.disciplines,
+        )
+        for sport in sports
+    ]
