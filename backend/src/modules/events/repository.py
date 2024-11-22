@@ -42,7 +42,9 @@ class EventsRepository:
         if filters.discipline:
             # FIXME: Может работать неверно, если у указанных спортов есть одинаковые названия дисциплин
             query = query.find(In(Event.sport, [discipline.sport for discipline in filters.discipline]))
-            query = query.find(In(Event.discipline, [discipline.discipline for discipline in filters.discipline]))
+            if None not in [discipline.discipline for discipline in filters.discipline]:
+                query = query.find(In(Event.discipline, [discipline.discipline for discipline in filters.discipline]))
+
         if filters.location:
             # TODO: Проверить
             query = query.find(In(Event.location, filters.location))
