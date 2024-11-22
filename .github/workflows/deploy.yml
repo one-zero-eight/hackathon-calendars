@@ -24,11 +24,10 @@ jobs:
         ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
     - name: Docker Compose Action 
       uses: hoverkraft-tech/compose-action@v2.0.2
-
-    - name: Build Docker images using Docker Compose
-      run: |
-        docker-compose build
-
+      with: 
+        compose-file: "./docker-compose.yaml"
+        compose-flags: "--build"
+        
     - name: Get all built Docker image IDs
       id: get_image_ids
       run: |
