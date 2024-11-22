@@ -21,7 +21,7 @@ async def create_notification(notification_create: NotificationCreate) -> Pydant
 
 @router.get("/{notification_id}")
 async def get_notification(notification_id: PydanticObjectId):
-    notification = await notification_repository.get_notificationч(notification_id)
+    notification = await notification_repository.get_notification(notification_id)
     if not notification:
         raise HTTPException(status_code=404, detail="Notification not found")
     return notification
