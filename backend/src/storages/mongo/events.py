@@ -33,16 +33,16 @@ class EventSchema(BaseSchema):
 
     sport: str
     "Название вида спорта"
-    discipline: str | None = None
-    "Название дисциплины"
+    discipline: list[str]
+    "Названия дисциплин"
 
-    start_date: datetime.datetime | None = None
+    start_date: datetime.datetime
     "Дата начала"
-    end_date: datetime.datetime | None = None
+    end_date: datetime.datetime
     "Дата конца"
 
-    location: EventLocation
-    "Место проведения"
+    location: list[EventLocation]
+    "Места проведения"
 
     participant_count: int | None = None
     "Количество участников"
