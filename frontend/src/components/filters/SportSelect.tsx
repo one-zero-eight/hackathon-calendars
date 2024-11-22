@@ -19,6 +19,7 @@ import {
 import { cn } from "@/lib/utils.ts";
 import { Check, ChevronsUpDown } from "lucide-react";
 import * as React from "react";
+import { FilterBaseProps } from "./common";
 
 export const sports = [
   {
@@ -142,9 +143,10 @@ export const sports = [
 ];
 
 export function SportSelect({
+  disabled, 
   value,
   onChange,
-}: {
+}: FilterBaseProps & {
   value: string | null;
   onChange: (value: string | null) => void;
 }) {
@@ -156,6 +158,7 @@ export function SportSelect({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={disabled}
             variant="outline"
             role="combobox"
             aria-expanded={open}
@@ -175,6 +178,7 @@ export function SportSelect({
               <CommandGroup>
                 {sports.map((framework) => (
                   <CommandItem
+                    disabled={disabled}
                     key={framework.value}
                     value={framework.value}
                     onSelect={(currentValue) => {

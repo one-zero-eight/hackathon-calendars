@@ -12,11 +12,13 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale/ru";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
+import { FilterBaseProps } from "./common";
 
 export function DatesFilter({
+  disabled,
   dateRange,
   onChange,
-}: {
+}: FilterBaseProps & {
   dateRange: DateRange | undefined;
   onChange: (v: DateRange | undefined) => void;
 }) {
@@ -53,6 +55,7 @@ export function DatesFilter({
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
+              disabled={disabled}
               initialFocus
               mode="range"
               defaultMonth={dateRange?.from}

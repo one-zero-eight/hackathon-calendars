@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils.ts";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
+import { FilterBaseProps } from "./common";
 
 const countries = [
   {
@@ -33,10 +34,11 @@ const countries = [
 ];
 
 export function LocationSelect({
+  disabled,
   country,
   region,
   onChange,
-}: {
+}: FilterBaseProps & {
   country: string | null;
   region: string | null;
   onChange: (country: string | null, region: string | null) => void;
@@ -53,6 +55,7 @@ export function LocationSelect({
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
+              disabled={disabled}
               variant="outline"
               role="combobox"
               aria-expanded={open}
@@ -70,6 +73,7 @@ export function LocationSelect({
                 <CommandGroup>
                   {countries.map((c) => (
                     <CommandItem
+                      disabled={disabled}
                       key={c.country}
                       value={c.country}
                       onSelect={(currentValue) => {
@@ -98,6 +102,7 @@ export function LocationSelect({
         <Popover open={regionOpen} onOpenChange={setRegionOpen}>
           <PopoverTrigger asChild>
             <Button
+              disabled={disabled}
               variant="outline"
               role="combobox"
               aria-expanded={regionOpen}
@@ -115,6 +120,7 @@ export function LocationSelect({
                 <CommandGroup>
                   {regions.map((r) => (
                     <CommandItem
+                      disabled={disabled}
                       key={r}
                       value={r}
                       onSelect={(currentValue) => {

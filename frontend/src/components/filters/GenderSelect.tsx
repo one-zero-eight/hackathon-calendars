@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { cn } from "@/lib/utils.ts";
+import { FilterBaseProps } from "./common";
 
 export type Gender = "male" | "female";
 
 export function GenderSelect({
+  disabled,
   value,
   onChange,
-}: {
+}: FilterBaseProps & {
   value: Gender | null;
   onChange: (value: Gender | null) => void;
 }) {
@@ -16,6 +18,7 @@ export function GenderSelect({
       <Label>Пол участников</Label>
       <div className="flex">
         <Button
+          disabled
           variant="outline"
           className={cn(
             "rounded-r-none border-r-0",
@@ -27,6 +30,7 @@ export function GenderSelect({
           любой
         </Button>
         <Button
+          disabled={disabled}
           variant="outline"
           className={cn(
             "rounded-none",
@@ -38,6 +42,7 @@ export function GenderSelect({
           муж
         </Button>
         <Button
+          disabled={disabled}
           variant="outline"
           className={cn(
             "rounded-l-none border-l-0",

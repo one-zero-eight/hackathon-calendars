@@ -1,11 +1,13 @@
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
+import { FilterBaseProps } from "./common";
 
 export function ParticipantsCountFilter({
+  disabled,
   start,
   end,
   onChange,
-}: {
+}: FilterBaseProps & {
   start: number | null;
   end: number | null;
   onChange: (start: number | null, end: number | null) => void;
@@ -16,6 +18,7 @@ export function ParticipantsCountFilter({
       <div className="flex items-center gap-2">
         от
         <Input
+          disabled={disabled}
           type="number"
           min={0}
           value={start ?? ""}
@@ -26,6 +29,7 @@ export function ParticipantsCountFilter({
         />
         до
         <Input
+          disabled={disabled}
           type="number"
           min={0}
           value={end ?? ""}

@@ -11,11 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from "./routes/__root";
+import { Route as SearchImport } from "./routes/search";
 import { Route as CalendarImport } from "./routes/calendar";
 import { Route as IndexImport } from "./routes/index";
 import { Route as AuthLoginImport } from "./routes/auth/login";
 
 // Create/Update Routes
+
+const SearchRoute = SearchImport.update({
+  id: "/search",
+  path: "/search",
+  getParentRoute: () => rootRoute,
+} as any);
 
 const CalendarRoute = CalendarImport.update({
   id: "/calendar",
@@ -53,6 +60,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof CalendarImport;
       parentRoute: typeof rootRoute;
     };
+    "/search": {
+      id: "/search";
+      path: "/search";
+      fullPath: "/search";
+      preLoaderRoute: typeof SearchImport;
+      parentRoute: typeof rootRoute;
+    };
     "/auth/login": {
       id: "/auth/login";
       path: "/auth/login";
@@ -68,12 +82,14 @@ declare module "@tanstack/react-router" {
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/calendar": typeof CalendarRoute;
+  "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
 }
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/calendar": typeof CalendarRoute;
+  "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
 }
 
@@ -81,27 +97,30 @@ export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/": typeof IndexRoute;
   "/calendar": typeof CalendarRoute;
+  "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/calendar" | "/auth/login";
+  fullPaths: "/" | "/calendar" | "/search" | "/auth/login";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/calendar" | "/auth/login";
-  id: "__root__" | "/" | "/calendar" | "/auth/login";
+  to: "/" | "/calendar" | "/search" | "/auth/login";
+  id: "__root__" | "/" | "/calendar" | "/search" | "/auth/login";
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   CalendarRoute: typeof CalendarRoute;
+  SearchRoute: typeof SearchRoute;
   AuthLoginRoute: typeof AuthLoginRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalendarRoute: CalendarRoute,
+  SearchRoute: SearchRoute,
   AuthLoginRoute: AuthLoginRoute,
 };
 
@@ -117,6 +136,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/calendar",
+        "/search",
         "/auth/login"
       ]
     },
@@ -125,6 +145,9 @@ export const routeTree = rootRoute
     },
     "/calendar": {
       "filePath": "calendar.tsx"
+    },
+    "/search": {
+      "filePath": "search.tsx"
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"

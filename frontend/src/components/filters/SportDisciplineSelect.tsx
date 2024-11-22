@@ -20,12 +20,14 @@ import {
 import { cn } from "@/lib/utils.ts";
 import { Check, ChevronsUpDown } from "lucide-react";
 import * as React from "react";
+import { FilterBaseProps } from "./common";
 
 export function SportDisciplineSelect({
+  disabled,
   sport,
   value,
   onChange,
-}: {
+}: FilterBaseProps & {
   sport: string | null;
   value: string | null;
   onChange: (value: string | null) => void;
@@ -44,6 +46,7 @@ export function SportDisciplineSelect({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={disabled}
             variant="outline"
             role="combobox"
             aria-expanded={open}
