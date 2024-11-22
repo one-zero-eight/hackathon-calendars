@@ -52,10 +52,10 @@ const joinName = (parts: (string | undefined | null)[]) =>
   parts.filter(Boolean).join(", ");
 
 const filterName = (i: LocationFilterItem) => {
-  if (i.country === 'Россия' && (i.city || i.region))
-    return joinName([i.region, i.city]) 
-  return joinName([i.country, i.region, i.city])
-}
+  if (i.country === "Россия" && (i.city || i.region))
+    return joinName([i.region, i.city]);
+  return joinName([i.country, i.region, i.city]);
+};
 
 const compItems = (a: LocationFilterItem, b: LocationFilterItem) =>
   a.country === b.country && a.region === b.region && a.city === b.city;
@@ -74,21 +74,21 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
   const all = useMemo<FlatLocation[]>(() => {
     const flat = [] as FlatLocation[];
     for (const x of data ?? []) {
-      const filter = { country: x.country }
+      const filter = { country: x.country };
       flat.push({
         name: filterName(filter),
         t: "country",
         filter,
       });
       for (const y of x.regions) {
-        const filter = { country: x.country, region: y.region }
+        const filter = { country: x.country, region: y.region };
         flat.push({
           name: filterName(filter),
           t: "region",
           filter,
         });
         for (const z of y.cities) {
-          const filter = { country: x.country, region: y.region, city: z }
+          const filter = { country: x.country, region: y.region, city: z };
           flat.push({
             name: filterName(filter),
             t: "city",
@@ -127,11 +127,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
     else onChange([...value, l]);
   };
 
-  const label = value.length === 0
-    ? 'Любое'
-    : value.length === 1
-      ? filterName(value[0])
-      : `${value.length} локаций`
+  const label = value.length === 0 ? "Любое" : value.map(filterName).join(", ");
 
   return (
     <BaseFilter {...rest}>
@@ -143,7 +139,9 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
             role="combobox"
             className="justify-between"
           >
-            {label}
+            <span className="min-w-0 overflow-hidden overflow-ellipsis">
+              {label}
+            </span>
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -176,8 +174,11 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
 
       <div className="flex flex-col gap-2">
         {selected.map(({ t, name, filter }) => (
-          <div key={name} className="flex items-center bg-blue-50 p-2 pl-4 rounded">
-            <span className="text-sm mr-2">{name}</span>
+          <div
+            key={name}
+            className="flex items-center rounded bg-blue-50 p-2 pl-4"
+          >
+            <span className="mr-2 text-sm">{name}</span>
             <LocBadge t={t} />
             <Button
               variant="outline"
