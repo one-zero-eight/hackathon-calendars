@@ -108,10 +108,53 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/events/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Search Events
+         * @description Search events.
+         */
+        post: operations["events_search_events"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Body_events_search_events */
+        Body_events_search_events: {
+            filters: components["schemas"]["Filters"];
+            sort: components["schemas"]["Sort"];
+            pagination: components["schemas"]["Pagination"];
+        };
+        /** DateFilter */
+        DateFilter: {
+            /** Start Date */
+            start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
+        };
+        /** DisciplineFilter */
+        DisciplineFilter: {
+            /**
+             * Sport Id
+             * @example 5eb7cf5a86d9755df3a6c593
+             */
+            sport_id: string;
+            /** Discipline Id */
+            discipline_id?: string | null;
+        };
         /** Event */
         "Event-Input": {
             /**
@@ -152,10 +195,78 @@ export interface components {
             /** Date End */
             date_end: string;
         };
+        /**
+         * Filters
+         * @description Список фильтров, которые применяются через И
+         */
+        Filters: {
+            /** Query */
+            query?: string | null;
+            date?: components["schemas"]["DateFilter"] | null;
+            /** Discipline */
+            discipline?: components["schemas"]["DisciplineFilter"][] | null;
+            /** Location */
+            location?: components["schemas"]["LocationFilter"][] | null;
+            gender?: components["schemas"]["Gender"] | null;
+            age?: components["schemas"]["MinMaxFilter"] | null;
+            participant_count?: components["schemas"]["MinMaxFilter"] | null;
+        };
+        /**
+         * Gender
+         * @enum {string}
+         */
+        Gender: "male" | "female";
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** LocationFilter */
+        LocationFilter: {
+            /**
+             * Country Id
+             * @example 5eb7cf5a86d9755df3a6c593
+             */
+            country_id: string;
+            /** City Id */
+            city_id?: string | null;
+        };
+        /** MinMaxFilter */
+        MinMaxFilter: {
+            /** Min */
+            min?: number | null;
+            /** Max */
+            max?: number | null;
+        };
+        /**
+         * Order
+         * @enum {string}
+         */
+        Order: "asc" | "desc";
+        /** Pagination */
+        Pagination: {
+            /** Page Size */
+            page_size: number;
+            /** Page No */
+            page_no: number;
+        };
+        /** SearchEventsResponse */
+        SearchEventsResponse: {
+            filters: components["schemas"]["Filters"];
+            sort: components["schemas"]["Sort"];
+            pagination: components["schemas"]["Pagination"];
+            /** Page */
+            page: number;
+            /** Pages Total */
+            pages_total: number;
+            /** Events */
+            events: components["schemas"]["Event-Output"][];
+        };
+        /** Sort */
+        Sort: {
+            date?: components["schemas"]["Order"] | null;
+            age?: components["schemas"]["Order"] | null;
+            participant_count?: components["schemas"]["Order"] | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -181,9 +292,20 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaBodyEventsSearchEvents = components['schemas']['Body_events_search_events'];
+export type SchemaDateFilter = components['schemas']['DateFilter'];
+export type SchemaDisciplineFilter = components['schemas']['DisciplineFilter'];
 export type SchemaEventInput = components['schemas']['Event-Input'];
 export type SchemaEventOutput = components['schemas']['Event-Output'];
+export type SchemaFilters = components['schemas']['Filters'];
+export type SchemaGender = components['schemas']['Gender'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
+export type SchemaLocationFilter = components['schemas']['LocationFilter'];
+export type SchemaMinMaxFilter = components['schemas']['MinMaxFilter'];
+export type SchemaOrder = components['schemas']['Order'];
+export type SchemaPagination = components['schemas']['Pagination'];
+export type SchemaSearchEventsResponse = components['schemas']['SearchEventsResponse'];
+export type SchemaSort = components['schemas']['Sort'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaViewUser = components['schemas']['ViewUser'];
 export type $defs = Record<string, never>;
@@ -367,6 +489,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": boolean;
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    events_search_events: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Body_events_search_events"];
+            };
+        };
+        responses: {
+            /** @description Search events */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchEventsResponse"];
                 };
             };
             /** @description Unable to verify credentials OR Credentials not provided */
