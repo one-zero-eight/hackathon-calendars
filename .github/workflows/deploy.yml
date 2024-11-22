@@ -22,10 +22,11 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+        
     - name: Docker Compose Action 
       uses: hoverkraft-tech/compose-action@v2.0.2
       with: 
-        compose-file: "./docker-compose.yaml"
+        compose-file: "docker-compose.yaml"
         compose-flags: "build"
         
     - name: Get all built Docker image IDs
