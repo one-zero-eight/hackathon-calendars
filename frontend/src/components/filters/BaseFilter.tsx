@@ -6,7 +6,7 @@ export function BaseFilter({
   children,
 }: PropsWithChildren<{ label?: React.ReactNode }>) {
   return (
-    <div className="flex w-fit flex-col gap-2">
+    <div className="flex flex-col gap-2">
       {label && <Label>{label}</Label>}
       {children}
     </div>

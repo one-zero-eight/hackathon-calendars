@@ -3,15 +3,19 @@ import { DisciplineFilter } from "./DisciplineFilter";
 import { MinMaxFilter } from "./MinMaxFilter";
 import { DatesFilter } from "./DatesFilter";
 import { GenderSelect } from "./GenderSelect";
+import { LocationFilter } from "./LocationFilter";
+import { cn } from "@/lib/utils";
 
 export function AllFilters({
   disabled,
   filters,
   onChange,
+  className
 }: {
   disabled?: boolean;
   filters: Filters;
   onChange: (v: Filters) => void;
+  className?: string
 }) {
   function getOnChange<K extends keyof Filters>(
     k: K,
@@ -22,12 +26,18 @@ export function AllFilters({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn("flex flex-col gap-6", className)}>
       <DisciplineFilter
         disabled={disabled}
         label="Виды спорта"
         value={filters.discipline}
         onChange={getOnChange("discipline")}
+      />
+      <LocationFilter
+        disabled={disabled} 
+        label="Место проведения"
+        value={filters.location}
+        onChange={getOnChange('location')}
       />
       <DatesFilter
         disabled={disabled}

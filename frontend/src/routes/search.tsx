@@ -24,8 +24,8 @@ function RouteComponent() {
 
   return (
     <div className="mt-4 flex gap-4 px-4">
-      <aside className="flex-grow-0 rounded-sm border p-4">
-        <AllFilters filters={filters} onChange={setFilters} />
+      <aside className="flex-grow-0 rounded-sm border p-4 w-[400px] flex-shrink-0">
+        <AllFilters filters={filters} onChange={setFilters} className="w-full" />
       </aside>
       <main className="flex flex-col gap-2">
         {(data?.events ?? []).map((event) => (
