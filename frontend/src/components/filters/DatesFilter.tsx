@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button.tsx";
 import { Calendar } from "@/components/ui/calendar.tsx";
-import { Label } from "@/components/ui/label.tsx";
 import {
   Popover,
   PopoverContent,
@@ -13,19 +12,20 @@ import { ru } from "date-fns/locale/ru";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { FilterBaseProps } from "./common";
+import { Filters } from "@/lib/types";
+import { BaseFilter } from "./BaseFilter";
 
-export function DatesFilter({
-  disabled,
-  dateRange,
-  onChange,
-}: FilterBaseProps & {
-  dateRange: DateRange | undefined;
-  onChange: (v: DateRange | undefined) => void;
-}) {
+export function DatesFilter(props: FilterBaseProps<Filters["date"]>) {
+  const { disabled, value, onChange, ...rest } = props;
+
+  const dateRange: DateRange | null = value ? {
+    from: value?.start_date ? new Date(value.start_date) : new Date(),
+    to: value?.end_date ? new Date(value.end_date) : undefined,
+  } : null
+
   return (
-    <div className="flex flex-col gap-1">
-      <Label>Даты проведения</Label>
-      <div className="grid gap-2">
+    <BaseFilter {...rest}>
+      <div>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -59,14 +59,30 @@ export function DatesFilter({
               initialFocus
               mode="range"
               defaultMonth={dateRange?.from}
-              selected={dateRange}
-              onSelect={onChange}
+              selected={dateRange ?? undefined}
+              onSelect={(range) => {
+                onChange(
+                  range
+                    ? {
+                        start_date: range.from
+                          ? encodeDate(range.from)
+                          : undefined,
+                        end_date: range.to ? encodeDate(range.to) : undefined,
+                      }
+                    : null,
+                );
+              }}
               numberOfMonths={2}
               locale={ru}
             />
           </PopoverContent>
         </Popover>
       </div>
-    </div>
+    </BaseFilter>
   );
+}
+
+// Returns date in format "YYYY-MM-DD".
+function encodeDate(d: Date): string {
+  return d.toISOString().split("T")[0];
 }

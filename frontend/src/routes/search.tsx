@@ -1,5 +1,6 @@
-import { SportDisciplineSelect } from "@/components/filters/SportDisciplineSelect";
-import { SportSelect } from "@/components/filters/SportSelect";
+import { $api } from "@/api";
+import { AllFilters } from "@/components/filters/AllFilters";
+import { Filters } from "@/lib/types";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -8,57 +9,30 @@ export const Route = createFileRoute("/search")({
 });
 
 function RouteComponent() {
-  const [loading, setLoading] = useState(false)
-  const [filters, setFilters] = useState({})
+  const [filters, setFilters] = useState<Filters>({});
+  const { data } = $api.useQuery("post", "/events/search", {
+    body: {
+      filters,
+      pagination: {
+        page_no: 1,
+        page_size: 100,
+      },
+      sort: {},
+    },
+  });
 
   return (
-    <div className="flex mt-4 px-4">
-      <aside className="border rounded-sm flex-grow-0 p-4">
-        <AllFilters
-          disabled={loading}
-          filters={filters}
-          onChange={setFilters}
-        />
+    <div className="mt-4 flex gap-4 px-4">
+      <aside className="flex-grow-0 rounded-sm border p-4">
+        <AllFilters filters={filters} onChange={setFilters} />
       </aside>
+      <main>
+        {(data?.events ?? []).map((event) => (
+          <div key={event.id}>
+            {JSON.stringify(event)}
+          </div>
+        ))}
+      </main>
     </div>
-  )
+  );
 }
-
-function AllFilters({
-  disabled,
-  filters,
-  onChange,
-}: {
-  disabled?: boolean,
-  filters: Filters,
-  onChange: (v: Filters) => void
-}) {
-  const handleSportChange = (newSport: string | null) => {
-    onChange({ ...filters, discipline: null, sport: newSport })
-  }
-
-  const handleDisciplineChange = (newDiscipline: string | null) => {
-    onChange({ ...filters, discipline: newDiscipline })
-  }
-
-  return (
-    <div className="flex flex-col gap-2">
-      <div>
-        <SportSelect
-          disabled={disabled}
-          value={filters.sport}
-          onChange={handleSportChange}
-        />
-        <SportDisciplineSelect
-          disabled={disabled}
-          onChange={handleDisciplineChange} 
-          sport={filters.sport}
-          value={filters.discipline}
-        />
-      </div>
-    </div>
-  )
-}
-
-// TODO
-type Filters = any
