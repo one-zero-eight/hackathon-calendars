@@ -26,6 +26,9 @@ class EventSchema(BaseSchema):
     title: str
     "Наименование спортивного мероприятия"
 
+    description: str | None = None
+    "Описание"
+
     gender: Gender | None = None
     "Пол участников (None - любой)"
 
@@ -57,6 +60,7 @@ class Event(EventSchema, CustomDocument):
             IndexModel(
                 [
                     ("title", pymongo.TEXT),
+                    ("description", pymongo.TEXT),
                     ("sport", pymongo.TEXT),
                     ("location.country", pymongo.TEXT),
                     ("location.region", pymongo.TEXT),
