@@ -25,4 +25,4 @@ jobs:
 
     - name: Deploy to server
       run: |
-        sudo sshpass -v -p ${{ secrets.SSH_PASSWORD }} ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && ./deploy.sh"
+        sshpass -v -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && ./deploy.sh"
