@@ -76,7 +76,9 @@ app.add_middleware(
 )
 
 from src.modules.events.routes import router as router_events  # noqa: E402
+from src.modules.sports.routes import router as router_sports  # noqa: E402
 from src.modules.users.routes import router as router_users  # noqa: E402
 
 app.include_router(router_users)
 app.include_router(router_events)
+app.include_router(router_sports)
