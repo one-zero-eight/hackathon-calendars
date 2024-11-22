@@ -26,8 +26,10 @@ function RouteComponent() {
             },
           ],
         },
-        sort: {},
-        pagination: { page_no: 1, page_size: 10000 },
+        sort: {
+          date: "asc",
+        },
+        pagination: { page_no: 1, page_size: 100 },
       },
     },
     {

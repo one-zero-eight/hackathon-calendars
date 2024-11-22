@@ -28,7 +28,9 @@ function RouteComponent() {
         page_no: 1,
         page_size: 100,
       },
-      sort: {},
+      sort: {
+        date: "asc",
+      },
     },
   });
 

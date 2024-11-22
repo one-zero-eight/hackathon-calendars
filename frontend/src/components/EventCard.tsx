@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
+import { cn } from "@/lib/utils.ts";
 import { Link } from "@tanstack/react-router";
 import { ImMan, ImManWoman, ImWoman } from "react-icons/im";
 
@@ -15,6 +16,12 @@ export function EventCard({ event }: { event: apiTypes.SchemaEventOutput }) {
   const { data: sports } = $api.useQuery("get", "/sports/");
 
   const sportId = sports?.find((s) => s.sport === event.sport)?.id;
+
+  const now = new Date().getTime() + 3 * 60 * 60 * 1000; // Московское время
+  const isCurrent =
+    now >= new Date(event.start_date).getTime() &&
+    now <= new Date(event.end_date).setHours(23, 59, 59);
+  const isFuture = now < new Date(event.start_date).getTime();
 
   // Функция для получения иконки пола
   const getGenderIcon = () => {
@@ -29,7 +36,14 @@ export function EventCard({ event }: { event: apiTypes.SchemaEventOutput }) {
   };
 
   return (
-    <Card key={event.ekp_id} className="mx-auto w-full shadow-md">
+    <Card
+      key={event.ekp_id}
+      className={cn(
+        "mx-auto w-full shadow-md",
+        isCurrent && "border-2 border-green-500",
+        isFuture && "border-2 border-blue-500",
+      )}
+    >
       <CardHeader className="pb-4">
         <CardTitle className="text-xl font-bold">{event.title}</CardTitle>
         <CardDescription className="text-sm text-gray-600">
