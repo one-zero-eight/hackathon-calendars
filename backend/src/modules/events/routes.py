@@ -69,7 +69,13 @@ async def get_all_filters_locations() -> list[LocationFilter]:
     """
     Get all locations.
     """
-    return []
+    # From all 'location' fields of events, get unique values
+    locations: list[LocationFilter] = list()
+    for event in await events_repository.read_all():
+        for location in event.location:
+            if location not in locations:
+                locations.append(LocationFilter(country=location.country, region=location.region, city=location.city))
+    return list(locations)
 
 
 @router.get("/search/filters/disciplines", responses={200: {"description": "All disciplines"}})
@@ -77,4 +83,10 @@ async def get_all_filters_disciplines() -> list[DisciplineFilter]:
     """
     Get all disciplines.
     """
-    return []
+    # From all 'sport' and 'disciplines' fields of events, get unique values
+    disciplines: list[DisciplineFilter] = list()
+    for event in await events_repository.read_all():
+        for discipline in event.discipline:
+            if discipline not in disciplines:
+                disciplines.append(DisciplineFilter(sport=event.sport, discipline=discipline))
+    return list(disciplines)
