@@ -14,6 +14,8 @@ import { Route as rootRoute } from "./routes/__root";
 import { Route as SearchImport } from "./routes/search";
 import { Route as CalendarImport } from "./routes/calendar";
 import { Route as IndexImport } from "./routes/index";
+import { Route as SportsSportIdImport } from "./routes/sports/$sportId";
+import { Route as EventsEventIdImport } from "./routes/events/$eventId";
 import { Route as AuthLoginImport } from "./routes/auth/login";
 
 // Create/Update Routes
@@ -33,6 +35,18 @@ const CalendarRoute = CalendarImport.update({
 const IndexRoute = IndexImport.update({
   id: "/",
   path: "/",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const SportsSportIdRoute = SportsSportIdImport.update({
+  id: "/sports/$sportId",
+  path: "/sports/$sportId",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const EventsEventIdRoute = EventsEventIdImport.update({
+  id: "/events/$eventId",
+  path: "/events/$eventId",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -74,6 +88,20 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthLoginImport;
       parentRoute: typeof rootRoute;
     };
+    "/events/$eventId": {
+      id: "/events/$eventId";
+      path: "/events/$eventId";
+      fullPath: "/events/$eventId";
+      preLoaderRoute: typeof EventsEventIdImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/sports/$sportId": {
+      id: "/sports/$sportId";
+      path: "/sports/$sportId";
+      fullPath: "/sports/$sportId";
+      preLoaderRoute: typeof SportsSportIdImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
@@ -84,6 +112,8 @@ export interface FileRoutesByFullPath {
   "/calendar": typeof CalendarRoute;
   "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
+  "/events/$eventId": typeof EventsEventIdRoute;
+  "/sports/$sportId": typeof SportsSportIdRoute;
 }
 
 export interface FileRoutesByTo {
@@ -91,6 +121,8 @@ export interface FileRoutesByTo {
   "/calendar": typeof CalendarRoute;
   "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
+  "/events/$eventId": typeof EventsEventIdRoute;
+  "/sports/$sportId": typeof SportsSportIdRoute;
 }
 
 export interface FileRoutesById {
@@ -99,14 +131,35 @@ export interface FileRoutesById {
   "/calendar": typeof CalendarRoute;
   "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
+  "/events/$eventId": typeof EventsEventIdRoute;
+  "/sports/$sportId": typeof SportsSportIdRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/calendar" | "/search" | "/auth/login";
+  fullPaths:
+    | "/"
+    | "/calendar"
+    | "/search"
+    | "/auth/login"
+    | "/events/$eventId"
+    | "/sports/$sportId";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/calendar" | "/search" | "/auth/login";
-  id: "__root__" | "/" | "/calendar" | "/search" | "/auth/login";
+  to:
+    | "/"
+    | "/calendar"
+    | "/search"
+    | "/auth/login"
+    | "/events/$eventId"
+    | "/sports/$sportId";
+  id:
+    | "__root__"
+    | "/"
+    | "/calendar"
+    | "/search"
+    | "/auth/login"
+    | "/events/$eventId"
+    | "/sports/$sportId";
   fileRoutesById: FileRoutesById;
 }
 
@@ -115,6 +168,8 @@ export interface RootRouteChildren {
   CalendarRoute: typeof CalendarRoute;
   SearchRoute: typeof SearchRoute;
   AuthLoginRoute: typeof AuthLoginRoute;
+  EventsEventIdRoute: typeof EventsEventIdRoute;
+  SportsSportIdRoute: typeof SportsSportIdRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -122,6 +177,8 @@ const rootRouteChildren: RootRouteChildren = {
   CalendarRoute: CalendarRoute,
   SearchRoute: SearchRoute,
   AuthLoginRoute: AuthLoginRoute,
+  EventsEventIdRoute: EventsEventIdRoute,
+  SportsSportIdRoute: SportsSportIdRoute,
 };
 
 export const routeTree = rootRoute
@@ -137,7 +194,9 @@ export const routeTree = rootRoute
         "/",
         "/calendar",
         "/search",
-        "/auth/login"
+        "/auth/login",
+        "/events/$eventId",
+        "/sports/$sportId"
       ]
     },
     "/": {
@@ -151,6 +210,12 @@ export const routeTree = rootRoute
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"
+    },
+    "/events/$eventId": {
+      "filePath": "events/$eventId.tsx"
+    },
+    "/sports/$sportId": {
+      "filePath": "sports/$sportId.tsx"
     }
   }
 }

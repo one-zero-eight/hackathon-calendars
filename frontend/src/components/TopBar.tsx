@@ -30,7 +30,7 @@ export function TopBar() {
           </Button>
         ) : (
           <>
-            <div className="text-lg">{me.id}</div>
+            <div className="text-lg">{me.login}</div>
             <Button variant="ghost" onClick={() => performLogout({})}>
               Выйти
             </Button>
