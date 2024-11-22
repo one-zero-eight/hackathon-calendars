@@ -128,6 +128,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/events/search/filters/locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get All Filters Locations
+         * @description Get all locations.
+         */
+        get: operations["events_get_all_filters_locations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/events/search/filters/disciplines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get All Filters Disciplines
+         * @description Get all disciplines.
+         */
+        get: operations["events_get_all_filters_disciplines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -147,13 +187,10 @@ export interface components {
         };
         /** DisciplineFilter */
         DisciplineFilter: {
-            /**
-             * Sport Id
-             * @example 5eb7cf5a86d9755df3a6c593
-             */
-            sport_id: string;
-            /** Discipline Id */
-            discipline_id?: string | null;
+            /** Sport */
+            sport: string;
+            /** Discipline */
+            discipline?: string | null;
         };
         /** Event */
         "Event-Input": {
@@ -163,16 +200,60 @@ export interface components {
              * @example 5eb7cf5a86d9755df3a6c593
              */
             _id?: string;
-            /** Title */
+            /**
+             * Ekp Id
+             * @description № СМ в ЕКП
+             */
+            ekp_id: number;
+            /**
+             * Title
+             * @description Наименование спортивного мероприятия
+             */
             title: string;
-            /** Description */
-            description: string;
-            /** Location */
-            location: string;
-            /** Date Start */
-            date_start: string;
-            /** Date End */
-            date_end: string;
+            /** @description Пол участников (None - любой) */
+            gender?: components["schemas"]["Gender"] | null;
+            /**
+             * Age Min
+             * @description Минимальный возраст участников
+             */
+            age_min?: number | null;
+            /**
+             * Age Max
+             * @description Максимальный возраст участников
+             */
+            age_max?: number | null;
+            /**
+             * Sport
+             * @description Название вида спорта
+             */
+            sport: string;
+            /**
+             * Discipline
+             * @description Названия дисциплин
+             */
+            discipline: string[];
+            /**
+             * Start Date
+             * Format: date-time
+             * @description Дата начала
+             */
+            start_date: string;
+            /**
+             * End Date
+             * Format: date-time
+             * @description Дата конца
+             */
+            end_date: string;
+            /**
+             * Location
+             * @description Места проведения
+             */
+            location: components["schemas"]["EventLocation"][];
+            /**
+             * Participant Count
+             * @description Количество участников
+             */
+            participant_count?: number | null;
         };
         /** Event */
         "Event-Output": {
@@ -184,16 +265,78 @@ export interface components {
              * @example 5eb7cf5a86d9755df3a6c593
              */
             id: string;
-            /** Title */
+            /**
+             * Ekp Id
+             * @description № СМ в ЕКП
+             */
+            ekp_id: number;
+            /**
+             * Title
+             * @description Наименование спортивного мероприятия
+             */
             title: string;
-            /** Description */
-            description: string;
-            /** Location */
-            location: string;
-            /** Date Start */
-            date_start: string;
-            /** Date End */
-            date_end: string;
+            /** @description Пол участников (None - любой) */
+            gender: components["schemas"]["Gender"] | null;
+            /**
+             * Age Min
+             * @description Минимальный возраст участников
+             */
+            age_min: number | null;
+            /**
+             * Age Max
+             * @description Максимальный возраст участников
+             */
+            age_max: number | null;
+            /**
+             * Sport
+             * @description Название вида спорта
+             */
+            sport: string;
+            /**
+             * Discipline
+             * @description Названия дисциплин
+             */
+            discipline: string[];
+            /**
+             * Start Date
+             * Format: date-time
+             * @description Дата начала
+             */
+            start_date: string;
+            /**
+             * End Date
+             * Format: date-time
+             * @description Дата конца
+             */
+            end_date: string;
+            /**
+             * Location
+             * @description Места проведения
+             */
+            location: components["schemas"]["EventLocation"][];
+            /**
+             * Participant Count
+             * @description Количество участников
+             */
+            participant_count: number | null;
+        };
+        /** EventLocation */
+        EventLocation: {
+            /**
+             * Country
+             * @description Название страны
+             */
+            country: string;
+            /**
+             * Region
+             * @description Название региона
+             */
+            region?: string | null;
+            /**
+             * City
+             * @description Название города
+             */
+            city?: string | null;
         };
         /**
          * Filters
@@ -223,13 +366,12 @@ export interface components {
         };
         /** LocationFilter */
         LocationFilter: {
-            /**
-             * Country Id
-             * @example 5eb7cf5a86d9755df3a6c593
-             */
-            country_id: string;
-            /** City Id */
-            city_id?: string | null;
+            /** Country */
+            country: string;
+            /** Region */
+            region?: string | null;
+            /** City */
+            city?: string | null;
         };
         /** MinMaxFilter */
         MinMaxFilter: {
@@ -297,6 +439,7 @@ export type SchemaDateFilter = components['schemas']['DateFilter'];
 export type SchemaDisciplineFilter = components['schemas']['DisciplineFilter'];
 export type SchemaEventInput = components['schemas']['Event-Input'];
 export type SchemaEventOutput = components['schemas']['Event-Output'];
+export type SchemaEventLocation = components['schemas']['EventLocation'];
 export type SchemaFilters = components['schemas']['Filters'];
 export type SchemaGender = components['schemas']['Gender'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
@@ -546,6 +689,60 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    events_get_all_filters_locations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All locations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationFilter"][];
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    events_get_all_filters_disciplines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All disciplines */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisciplineFilter"][];
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
