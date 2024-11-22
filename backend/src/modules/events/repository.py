@@ -5,6 +5,9 @@ from src.storages.mongo.events import Event
 
 # noinspection PyMethodMayBeStatic
 class EventsRepository:
+    async def read_one(self, id: str) -> Event | None:
+        return await Event.get(id)
+
     async def read_all(self) -> list[Event] | None:
         return await Event.all().to_list()
 

@@ -23,6 +23,14 @@ async def get_all_events() -> list[Event]:
     return await events_repository.read_all()
 
 
+@router.get("/{id}", responses={200: {"description": "Info about event"}})
+async def get_event(id: str) -> Event:
+    """
+    Get info about one event.
+    """
+    return await events_repository.read_one(id)
+
+
 @router.post("/", responses={200: {"description": "Create many events"}})
 async def create_many_events(events: list[Event]) -> bool:
     """
@@ -84,6 +92,7 @@ async def get_all_filters_locations() -> list[LocationsFilterVariants]:
     Get all locations.
     """
     # From all 'location' fields of events, get unique values
+    # TODO: Write Mongo request
     countries: dict[str, dict[str, RegionsFilterVariants]] = {}
     for event in await events_repository.read_all():
         for location in event.location:
@@ -115,6 +124,7 @@ async def get_all_filters_disciplines() -> list[DisciplinesFilterVariants]:
     Get all disciplines.
     """
     # From all 'sport' and 'disciplines' fields of events, get unique values
+    # TODO: Write Mongo request
     sports: dict[str, DisciplinesFilterVariants] = {}
     for event in await events_repository.read_all():
         if event.sport not in sports:
