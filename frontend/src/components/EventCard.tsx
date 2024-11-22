@@ -43,6 +43,7 @@ export function EventCard({ event }: { event: apiTypes.SchemaEventOutput }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2 pb-2">
+        <p className="text-sm">{event.description}</p>
         <p className="text-sm">
           <strong>Дисциплины:</strong>{" "}
           {event.discipline.length > 0

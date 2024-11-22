@@ -232,6 +232,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/notify/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Notification */
+        post: operations["notifies_create_notification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notify/{notification_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Notification */
+        get: operations["notifies_get_notification"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -281,6 +315,11 @@ export interface components {
              * @description Наименование спортивного мероприятия
              */
             title: string;
+            /**
+             * Description
+             * @description Описание
+             */
+            description?: string | null;
             /** @description Пол участников (None - любой) */
             gender?: components["schemas"]["Gender"] | null;
             /**
@@ -346,6 +385,11 @@ export interface components {
              * @description Наименование спортивного мероприятия
              */
             title: string;
+            /**
+             * Description
+             * @description Описание
+             */
+            description: string | null;
             /** @description Пол участников (None - любой) */
             gender: components["schemas"]["Gender"] | null;
             /**
@@ -457,6 +501,25 @@ export interface components {
             min?: number | null;
             /** Max */
             max?: number | null;
+        };
+        /** NotificationCreate */
+        NotificationCreate: {
+            /** Event Title */
+            event_title: string;
+            /** Notification Options */
+            notification_options: Record<string, never>;
+            /**
+             * Target Date
+             * Format: date-time
+             */
+            target_date: string;
+            /** User Id */
+            user_id: number;
+            /**
+             * Sent
+             * @default false
+             */
+            sent: boolean;
         };
         /**
          * Order
@@ -574,6 +637,7 @@ export type SchemaHttpValidationError = components['schemas']['HTTPValidationErr
 export type SchemaLocationFilter = components['schemas']['LocationFilter'];
 export type SchemaLocationsFilterVariants = components['schemas']['LocationsFilterVariants'];
 export type SchemaMinMaxFilter = components['schemas']['MinMaxFilter'];
+export type SchemaNotificationCreate = components['schemas']['NotificationCreate'];
 export type SchemaOrder = components['schemas']['Order'];
 export type SchemaPagination = components['schemas']['Pagination'];
 export type SchemaRegionsFilterVariants = components['schemas']['RegionsFilterVariants'];
@@ -1001,6 +1065,84 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Sport-Output"];
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    notifies_create_notification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    notifies_get_notification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Unable to verify credentials OR Credentials not provided */
