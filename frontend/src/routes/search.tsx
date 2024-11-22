@@ -1,4 +1,5 @@
 import { $api } from "@/api";
+import { EventCard } from "@/components/EventCard.tsx";
 import { AllFilters } from "@/components/filters/AllFilters";
 import { Filters } from "@/lib/types";
 import { createFileRoute } from "@tanstack/react-router";
@@ -26,11 +27,9 @@ function RouteComponent() {
       <aside className="flex-grow-0 rounded-sm border p-4">
         <AllFilters filters={filters} onChange={setFilters} />
       </aside>
-      <main>
+      <main className="flex flex-col gap-2">
         {(data?.events ?? []).map((event) => (
-          <div key={event.id}>
-            {JSON.stringify(event)}
-          </div>
+          <EventCard key={event.id} event={event} />
         ))}
       </main>
     </div>

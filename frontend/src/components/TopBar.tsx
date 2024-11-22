@@ -19,7 +19,7 @@ export function TopBar() {
           <Link to="/">Главная</Link>
         </Button>
         <Button asChild variant="ghost">
-          <Link to="/calendar">Календарь</Link>
+          <Link to="/search">Мероприятия</Link>
         </Button>
       </div>
 
