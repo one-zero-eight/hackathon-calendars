@@ -22,11 +22,8 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-
-    - name: Install Docker and Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io docker-compose
+    - name: Docker Compose Action 
+      uses: hoverkraft-tech/compose-action@v2.0.2
 
     - name: Build Docker images using Docker Compose
       run: |
