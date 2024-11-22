@@ -30,7 +30,7 @@ app = FastAPI(
     title="login pass",
     version="0.1.0",
     contact={
-        "name": "one-zero-eight (Telegram)",
+        "name": "Сайтики",
         "url": "https://t.me/one_zero_eight",
     },
     license_info={
