@@ -49,9 +49,9 @@ function RouteComponent() {
     e.preventDefault();
 
     if (register) {
-      performRegister({ body: { login, password } });
+      performRegister({ params: { query: { login, password } } });
     } else {
-      performLogin({ body: { login, password } });
+      performLogin({ params: { query: { login, password } } });
     }
   };
 

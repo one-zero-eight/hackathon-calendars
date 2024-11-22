@@ -22,7 +22,7 @@ export function TopBar() {
             <Link to="/auth/login">Войти</Link>
           </Button>
         ) : (
-          <div className="text-lg">{me.login}</div>
+          <div className="text-lg">{me.id}</div>
         )}
       </div>
     </div>
