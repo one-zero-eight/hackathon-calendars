@@ -28,7 +28,7 @@ def generate_unique_operation_id(route: APIRoute) -> str:
 # App definition
 app = FastAPI(
     title="Календари спортивных мероприятий",
-    version="0.1.1",
+    version="0.1.0",
     contact={
         "name": "one-zero-eight",
         "url": "https://t.me/one_zero_eight",
