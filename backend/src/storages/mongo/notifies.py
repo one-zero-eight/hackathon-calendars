@@ -14,7 +14,7 @@ class NotifySchema(BaseSchema):
     sport_id: PydanticObjectId | None = None
     endpoint: str
     keys: dict
-    target_date: datetime.datetime
+    event_dates: list[datetime.datetime]
     user_id: PydanticObjectId
     sent: bool = False
 

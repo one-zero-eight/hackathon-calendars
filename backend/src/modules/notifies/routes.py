@@ -1,10 +1,14 @@
+from datetime import UTC, datetime
+
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 
 from src.api.dependencies import USER_AUTH
 from src.api.exceptions import IncorrectCredentialsException
 from src.modules.events.repository import events_repository
+from src.modules.events.schemas import DateFilter, DisciplineFilter, Filters, Pagination, Sort
 from src.modules.notifies.repository import Notification, notification_repository
+from src.modules.notifies.scheams import Filter as NotifyFilter
 from src.modules.notifies.scheams import NotificationCreateReq
 from src.modules.sports.repository import sports_repository
 
@@ -22,26 +26,53 @@ async def create_notification(notification_create: NotificationCreateReq, auth: 
     user_id = auth.user_id
     notification_to_insert: Notification
     notification_create = notification_create.model_dump()
-    print(notification_create["notification_type"])
     if notification_create["notification_type"]["type"] == "event":
         event = await events_repository.read_one(notification_create["notification_type"]["id"])
-        if event is None:
+        if event is None or event.start_date < datetime.now(UTC):
             raise HTTPException(status_code=404)
+
+        event_notifications = await notification_repository.list_notification_by_filter(
+            NotifyFilter(user_id=user_id, sport_title=event.sport)
+        )
+        if len(event_notifications) > 0:
+            raise HTTPException(
+                status_code=400, detail=f"You already subscribed to event by using subscription to sport: {event.sport}"
+            )
+
         notification_to_insert = Notification(
             event_title=event.title,
-            target_date=notification_create["notification_options"]["expiration_time"],
             user_id=user_id,
             event_id=event.id,
+            event_dates=[event.start_date],
             endpoint=notification_create["notification_options"]["endpoint"],
             keys=notification_create["notification_options"]["keys"],
         )
     else:
         sport = await sports_repository.read_one(str(notification_create["notification_type"]["id"]))
-        if sport.sport is None:
+        if sport is None:
             raise HTTPException(status_code=404)
+
+        events = await events_repository.read_with_filters(
+            filters=Filters(
+                discipline=[DisciplineFilter(sport=sport.sport)],
+                date=DateFilter(
+                    start_date=datetime.now(UTC),
+                ),
+            ),
+            pagination=Pagination(page_no=1, page_size=10000000),
+            sort=Sort(),
+        )
+
+        await notification_repository.make_sent_notifications_by_filter(
+            filter=NotifyFilter(
+                user_id=user_id,
+                event_title=list(map(lambda item: item.title, events)),
+            )
+        )
+
         notification_to_insert = Notification(
             sport_title=sport.sport,
-            target_date=notification_create["notification_options"]["expiration_time"],
+            event_dates=sorted(map(lambda item: item.start_date, events)),
             user_id=user_id,
             sport_id=sport.id,
             endpoint=notification_create["notification_options"]["endpoint"],

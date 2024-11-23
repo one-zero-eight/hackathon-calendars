@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Literal
 
 from beanie import PydanticObjectId
@@ -11,7 +10,6 @@ class NotificationOption(BaseModel):
         auth: str
 
     endpoint: str
-    expiration_time: datetime | None = None
     keys: Keys
 
 
@@ -28,3 +26,10 @@ class SportNotification(BaseModel):
 class NotificationCreateReq(BaseModel):
     notification_type: EventNotification | SportNotification = Field(discriminator="type")
     notification_options: NotificationOption
+
+
+class Filter(BaseModel):
+    user_id: PydanticObjectId = None
+    sport_title: str = None
+    event_title: list[str] = None
+    existing: bool = True
