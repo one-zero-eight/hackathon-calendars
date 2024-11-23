@@ -33,6 +33,10 @@ class Settings(SettingBaseModel):
     "Allowed origins for CORS: from which domains requests to the API are allowed. Specify as a regex: `https://.*.innohassle.ru`"
     session_secret_key: SecretStr
     "Secret key for session middleware"
+    static_mount_path: str = "/static"
+    "Path to mount static files"
+    static_directory: Path = Path("static")
+    "Path to the directory with static files"
 
     @classmethod
     def from_yaml(cls, path: Path) -> "Settings":

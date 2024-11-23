@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from fastapi_swagger import patch_fastapi
 from starlette.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
 
 import src.logging_  # noqa: F401
 from src.api.lifespan import lifespan
@@ -74,6 +75,9 @@ app.add_middleware(
     https_only=True if settings.environment == Environment.PRODUCTION else False,
     domain=None,
 )
+
+app.mount(settings.static_mount_path, StaticFiles(directory=settings.static_directory), name="static")
+
 
 from src.modules.events.routes import router as router_events  # noqa: E402
 from src.modules.notifies.routes import router as router_notify  # noqa: E402
