@@ -3,11 +3,13 @@ import { SportBadge } from "@/components/SportBadge";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import Marquee from "react-fast-marquee";
+import CountUp from "react-countup";
 import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Temporal } from "temporal-polyfill";
 import { ChevronRight } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -37,6 +39,9 @@ const QUICKLINKS = {
 function RouteComponent() {
   const navigate = useNavigate();
   const { data: sports } = $api.useQuery("get", "/sports/");
+  const { data: eventsTotal } = $api.useQuery("post", "/events/search/count", {
+    body: {},
+  });
   const [search, setSearch] = useState("");
 
   const handleQuicklinkClick = (q: keyof typeof QUICKLINKS) => {
@@ -66,8 +71,22 @@ function RouteComponent() {
         <h1 className="mb-4 text-center text-6xl font-medium tracking-tight">
           Единый Календарь Спорта
         </h1>
-        <h2 className="text-center text-2xl opacity-80">
-          Все спортивные мероприятия в одном месте.
+        <h2 className="text-center text-2xl opacity-80 flex gap-2 items-center">
+          {eventsTotal == null ? (
+            <Skeleton className="h-8 w-[100px] inline-block" />
+          ) : (
+            <CountUp end={eventsTotal} duration={3.5} separator=" " suffix=" "></CountUp>
+          )}
+          <span>спортивных мероприятий из </span>
+          <a
+            href="https://www.minsport.gov.ru/activity/government-regulation/edinyj-kalendarnyj-plan/"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            ЕКП
+          </a>
+          <span> в одном месте.</span>
         </h2>
         <form
           onSubmit={(e) => {
@@ -116,7 +135,7 @@ function RouteComponent() {
         <h2 className="text-center text-2xl font-medium">
           Выбери свой вид спорта
         </h2>
-        <div className="flex flex-col gap-2 my-6">
+        <div className="my-6 flex flex-col gap-2">
           <Marquee direction="left" speed={20} pauseOnHover>
             {sports1.map((sport) => (
               <SportBadge
