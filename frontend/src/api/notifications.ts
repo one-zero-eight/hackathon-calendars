@@ -8,7 +8,7 @@ export async function sendNotification(
     return false;
   }
 
-  await registration.showNotification("Спортивные мероприятия", {
+  await registration.showNotification("Единый Календарь Событий", {
     body: message,
   });
   return true;
