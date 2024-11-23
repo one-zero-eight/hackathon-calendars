@@ -1,11 +1,8 @@
 import { $api } from "@/api";
+import { EventCard } from "@/components/EventCard";
 import { ExportSportToCalendar } from "@/components/ExportSportToCalendar.tsx";
 import { SportSubscribeButton } from "@/components/SportSubscribeButton.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { cn, plainDatesForFilter } from "@/lib/utils.ts";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import SportSVG from "./sport.svg";
-import { Separator } from "@/components/ui/separator";
 import {
   Command,
   CommandGroup,
@@ -18,10 +15,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ArrowUpRight, ChevronsUpDown } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn, plainDatesForFilter } from "@/lib/utils.ts";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowUpRight, ChevronsUpDown, Link as LinkIcon } from "lucide-react";
 import { Temporal } from "temporal-polyfill";
-import { EventCard } from "@/components/EventCard";
+import SportSVG from "./sport.svg";
 
 export const Route = createFileRoute("/sports/$sportId")({
   component: RouteComponent,
@@ -71,10 +71,10 @@ function RouteComponent() {
   };
 
   return (
-    <div className="mx-auto my-6 flex w-full container max-w-[1140px] flex-col">
+    <div className="container mx-auto my-6 flex w-full max-w-[1140px] flex-col px-4">
       <div className="flex flex-col gap-4 rounded-lg border px-8 py-4">
         <div className="flex items-center gap-6">
-          <div className="h-[128px] w-[128px] flex-shrink-0 flex-grow-0 overflow-hidden rounded-full">
+          <div className="h-[256px] w-[256px] flex-shrink-0 flex-grow-0 overflow-hidden rounded-xl">
             {isLoading ? (
               <Skeleton className="h-full w-full" />
             ) : (
@@ -103,6 +103,21 @@ function RouteComponent() {
               <>
                 <h1 className="mb-1 text-3xl font-medium">{sport?.sport}</h1>
                 <p>{sport?.description}</p>
+                <Button
+                  asChild
+                  className="mt-2 w-fit rounded-md text-xs"
+                  variant="secondary"
+                >
+                  <a
+                    href={`https://storage.minsport.gov.ru/cms-uploads/cms/II_chast_EKP_2024_14_11_24_65c6deea36.pdf#page=${sport?.page}&search=${sport?.sport}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="!text-blue-500"
+                  >
+                    <LinkIcon />
+                    Найти в ЕКП
+                  </a>
+                </Button>
               </>
             )}
           </div>
@@ -169,9 +184,9 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 mt-6">
+      <div className="mt-6 flex flex-col gap-4">
         <h2 className="text-xl">Предстоящие события</h2>
-        {(isLoading || upcomingLoading) ? (
+        {isLoading || upcomingLoading ? (
           <>
             <Skeleton className="h-[150px] w-full" />
             <Skeleton className="h-[150px] w-full" />
@@ -186,7 +201,7 @@ function RouteComponent() {
             ))}
           </>
         ) : (
-          <div className="mx-auto bg-stone-100 px-[64px] text-stone-500 py-10 rounded-xl text-lg">
+          <div className="mx-auto rounded-xl bg-stone-100 px-[64px] py-10 text-lg text-stone-500">
             <span>Нет запланированных событий</span>
           </div>
         )}
