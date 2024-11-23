@@ -38,8 +38,8 @@ function RouteComponent() {
   );
 
   return (
-    <div className="flex gap-2 p-4">
-      <Card className="flex w-full max-w-2xl flex-col gap-2 p-4">
+    <div className="flex w-full flex-col gap-2 p-4 lg:flex-row">
+      <Card className="flex w-full flex-col gap-2 p-4">
         <img src={SportSVG} className="h-[350px]" />
         <CardTitle className="text-4xl">{sport?.sport}</CardTitle>
         <CardContent className="px-0">

@@ -25,7 +25,9 @@ function RouteComponent() {
     <div className="flex flex-col gap-4 p-4">
       <form onSubmit={onSubmit}>
         <div className="flex h-[50vh] flex-col items-center justify-center gap-6">
-          <h2 className="text-4xl">Найди любое спортивное мероприятие!</h2>
+          <h2 className="text-center text-4xl">
+            Найди любое спортивное мероприятие!
+          </h2>
           <div className="flex w-full max-w-[600px] gap-2">
             <Input
               value={search}
