@@ -2,13 +2,13 @@ import { $api } from "@/api";
 import { SportBadge } from "@/components/SportBadge";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import Marquee from "react-fast-marquee";
-import CountUp from "react-countup";
 import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Temporal } from "temporal-polyfill";
 import { ChevronRight } from "lucide-react";
+import { useMemo, useState } from "react";
+import CountUp from "react-countup";
+import Marquee from "react-fast-marquee";
+import { Temporal } from "temporal-polyfill";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -67,6 +67,7 @@ function RouteComponent() {
   return (
     <main className="w-full">
       <section className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center justify-center">
+        <img src="/favicon.png" className="-mt-36 mb-8 h-48 w-48" />
         <h1 className="mb-4 text-center text-6xl font-medium tracking-tight">
           Единый Календарь Спорта
         </h1>
