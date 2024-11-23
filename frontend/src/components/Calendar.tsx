@@ -1,7 +1,7 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 
 const MONTH_NAMES: { [n in number]?: string } = {
   0: "Январь",
@@ -84,12 +84,15 @@ export function Calendar({
           <Button
             disabled={disabled}
             variant="outline"
-            className="flex h-fit min-w-[165px] flex-col items-center p-2"
+            className="group flex h-fit min-w-[165px] flex-col items-center p-2"
             key={idx}
             onClick={() => onMonthSelect(year, idx)}
           >
             <span className="text-xl">{MONTH_NAMES[idx]}</span>
-            <Badge variant="secondary">
+            <Badge
+              variant="secondary"
+              className="bg-green-100 group-hover:bg-green-200"
+            >
               {`${countByMonth[idx] ?? "—"} мероприятий`}
             </Badge>
           </Button>
