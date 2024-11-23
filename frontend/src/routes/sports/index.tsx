@@ -53,16 +53,29 @@ function RouteComponent() {
                 {sport.disciplines.length}
               </div>
 
-              <Button asChild variant="secondary" className="w-fit">
-                <Link
-                  to="/sports/$sportId"
-                  params={{ sportId: sport.id }}
-                  className="text-lg text-blue-500"
-                >
-                  <LinkIcon />
-                  Подробнее
-                </Link>
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button asChild variant="secondary" className="w-fit">
+                  <Link
+                    to="/sports/$sportId"
+                    params={{ sportId: sport.id }}
+                    className="text-lg text-blue-500"
+                  >
+                    <LinkIcon />
+                    Подробнее
+                  </Link>
+                </Button>
+                <Button asChild variant="secondary" className="w-fit">
+                  <a
+                    href={`https://storage.minsport.gov.ru/cms-uploads/cms/II_chast_EKP_2024_14_11_24_65c6deea36.pdf#page=${sport.page}&search=${sport.sport}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-lg !text-blue-500"
+                  >
+                    <LinkIcon />
+                    ЕКП
+                  </a>
+                </Button>
+              </div>
             </div>
           </Card>
         ))}

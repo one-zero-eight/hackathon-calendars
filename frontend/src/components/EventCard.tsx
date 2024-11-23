@@ -112,6 +112,9 @@ export function EventCard({ event }: { event: Event }) {
           >
             <a
               href={`https://storage.minsport.gov.ru/cms-uploads/cms/II_chast_EKP_2024_14_11_24_65c6deea36.pdf#page=${event.page}&search=${event.ekp_id}`}
+              target="_blank"
+              rel="noreferrer"
+              className="!text-blue-500"
             >
               <LinkIcon />
               ЕКП СМ №{event.ekp_id}
