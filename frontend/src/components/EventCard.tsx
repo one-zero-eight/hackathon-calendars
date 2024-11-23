@@ -1,16 +1,17 @@
 import { $api } from "@/api";
+import { EventSubscribeButton } from "@/components/EventSubscribeButton.tsx";
 import { Event } from "@/lib/types";
 import { cn, infoForDateRange, locationText } from "@/lib/utils.ts";
 import { Link } from "@tanstack/react-router";
-import { ImMan, ImWoman } from "react-icons/im";
-import { Badge } from "./ui/badge";
 import { MapPin, Users } from "lucide-react";
-import { Separator } from "./ui/separator";
+import { ImMan, ImWoman } from "react-icons/im";
 import { Temporal } from "temporal-polyfill";
+import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
 
 const ageText = (min?: number | null, max?: number | null) => {
   if (min != null && max != null) {
-    return `от ${min} до ${max}`;
+    return `${min}-${max} лет`;
   } else if (min != null) {
     return `${min}+ лет`;
   } else if (max != null) {
@@ -86,7 +87,7 @@ export function EventCard({ event }: { event: Event }) {
         ) : (
           <>
             <span className="text-xl font-black">{plainDateStr(start)}</span>
-            <span className="inline-block h-[4px] w-[16px] my-1 bg-current"></span>
+            <span className="my-1 inline-block h-[4px] w-[16px] bg-current"></span>
             <span className="text-xl font-black">{plainDateStr(end)}</span>
           </>
         )}
@@ -98,7 +99,7 @@ export function EventCard({ event }: { event: Event }) {
           <Link
             to="/sports/$sportId"
             params={{ sportId: sportId ?? "" }}
-            className="underline text-sm"
+            className="text-sm underline"
           >
             {event.sport}
           </Link>
@@ -141,7 +142,9 @@ export function EventCard({ event }: { event: Event }) {
         </div>
 
         {event.description && (
-          <p className="break-words line-clamp-1 overflow-hidden overflow-ellipsis min-w-0">{event.description}</p>
+          <p className="line-clamp-1 min-w-0 overflow-hidden overflow-ellipsis break-words">
+            {event.description}
+          </p>
         )}
 
         {event.discipline.length > 0 && (
@@ -162,6 +165,9 @@ export function EventCard({ event }: { event: Event }) {
             </div>
           </>
         )}
+        <div className="flex flex-wrap gap-2">
+          <EventSubscribeButton event={event} />
+        </div>
       </div>
     </div>
   );

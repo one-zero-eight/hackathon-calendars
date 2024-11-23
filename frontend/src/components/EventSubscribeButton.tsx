@@ -31,7 +31,7 @@ export function EventSubscribeButton({
     if (!me) {
       navigate({
         to: "/auth/login",
-        search: { redirect: window.location.href },
+        search: { redirectTo: window.location.href },
       });
       return;
     }
@@ -57,7 +57,11 @@ export function EventSubscribeButton({
 
   return (
     <>
-      <Button className="w-fit" variant="secondary" onClick={() => subscribe()}>
+      <Button
+        className="h-7 w-fit rounded-md px-2"
+        variant="secondary"
+        onClick={() => subscribe()}
+      >
         Получать уведомления
       </Button>
 

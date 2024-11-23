@@ -8,7 +8,9 @@ import { FormEvent, useState } from "react";
 
 export const Route = createFileRoute("/auth/login")({
   component: RouteComponent,
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { redirectTo?: string } => {
     return {
       redirectTo: (search.redirect as string | undefined) || undefined,
     };
