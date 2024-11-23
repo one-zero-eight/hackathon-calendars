@@ -1,5 +1,6 @@
 import { $api } from "@/api";
 import { EventCard } from "@/components/EventCard.tsx";
+import { ExportFiltersToCalendar } from "@/components/ExportFiltersToCalendar.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Card, CardContent, CardTitle } from "@/components/ui/card.tsx";
 import { cn } from "@/lib/utils.ts";
@@ -57,6 +58,11 @@ function RouteComponent() {
         <CardContent className="px-0">
           <div className="rounded-xl border-2 p-4 text-lg">
             {sport?.description}
+          </div>
+          <div className="mt-4 flex-row">
+            <ExportFiltersToCalendar
+              filters={{ discipline: [{ sport: sport?.sport ?? "" }] }}
+            />
           </div>
           <div className="mt-4 text-2xl font-semibold">
             Всего дисциплин: {sport?.disciplines.length}
