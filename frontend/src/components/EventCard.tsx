@@ -1,101 +1,168 @@
-import { $api, apiTypes } from "@/api";
-import { EventSubscribeButton } from "@/components/EventSubscribeButton.tsx";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import { cn } from "@/lib/utils.ts";
+import { $api } from "@/api";
+import { Event } from "@/lib/types";
+import { cn, infoForDateRange, locationText } from "@/lib/utils.ts";
 import { Link } from "@tanstack/react-router";
-import { ImMan, ImManWoman, ImWoman } from "react-icons/im";
+import { ImMan, ImWoman } from "react-icons/im";
+import { Badge } from "./ui/badge";
+import { MapPin, Users } from "lucide-react";
+import { Separator } from "./ui/separator";
+import { Temporal } from "temporal-polyfill";
 
-export function EventCard({ event }: { event: apiTypes.SchemaEventOutput }) {
+const ageText = (min?: number | null, max?: number | null) => {
+  if (min != null && max != null) {
+    return `от ${min} до ${max}`;
+  } else if (min != null) {
+    return `${min}+ лет`;
+  } else if (max != null) {
+    return `до ${max} лет`;
+  }
+  return "";
+};
+
+const monthName = (m: number) => {
+  switch (m) {
+    case 1:
+      return "ЯНВ";
+    case 2:
+      return "ФЕВ";
+    case 3:
+      return "МАР";
+    case 4:
+      return "АПР";
+    case 5:
+      return "МАЙ";
+    case 6:
+      return "ИЮН";
+    case 7:
+      return "ИЮЛ";
+    case 8:
+      return "АВГ";
+    case 9:
+      return "СЕН";
+    case 10:
+      return "ОКТ";
+    case 11:
+      return "НОЯ";
+    case 12:
+      return "ДЕК";
+  }
+  return "";
+};
+
+const plainDateStr = (d: Temporal.PlainDate) =>
+  `${d.day} ${monthName(d.month)}`;
+
+export function EventCard({ event }: { event: Event }) {
   const { data: sports } = $api.useQuery("get", "/sports/");
 
   const sportId = sports?.find((s) => s.sport === event.sport)?.id;
 
-  const now = new Date().getTime() + 3 * 60 * 60 * 1000; // Московское время
-  const isCurrent =
-    now >= new Date(event.start_date).getTime() &&
-    now <= new Date(event.end_date).setHours(23, 59, 59);
-  const isFuture = now < new Date(event.start_date).getTime();
+  const {
+    start,
+    end,
+    time,
+    label: timeLabel,
+  } = infoForDateRange(
+    event.start_date.split("T")[0],
+    event.end_date.split("T")[0],
+  );
 
-  // Функция для получения иконки пола
-  const getGenderIcon = () => {
-    switch (event.gender) {
-      case "male":
-        return <ImMan className="inline text-blue-500" size={20} />;
-      case "female":
-        return <ImWoman className="inline text-pink-500" size={20} />;
-      default:
-        return <ImManWoman className="inline text-gray-500" size={20} />; // "Any"
-    }
-  };
+  const singleDay = start.toString() === end.toString();
+  const age = ageText(event.age_min, event.age_max);
 
   return (
-    <Card
-      key={event.ekp_id}
-      className={cn(
-        "mx-auto w-full shadow-md",
-        isCurrent && "border-2 border-green-500",
-        isFuture && "border-2 border-blue-500",
-      )}
-    >
-      <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-bold">{event.title}</CardTitle>
-        <CardDescription className="text-sm text-gray-600">
+    <div className="flex overflow-hidden rounded-lg border">
+      <div
+        className={cn(
+          "flex w-[175px] flex-shrink-0 flex-grow-0 flex-col items-center justify-center text-white",
+          time === "present" && "bg-green-600",
+          time === "future" && "bg-blue-600",
+          time === "past" && "bg-stone-600 text-stone-400",
+        )}
+      >
+        <span className="mb-2">{start.year}</span>
+        {singleDay ? (
+          <span className="text-xl font-black">{plainDateStr(start)}</span>
+        ) : (
+          <>
+            <span className="text-xl font-black">{plainDateStr(start)}</span>
+            <span className="inline-block h-[4px] w-[16px] my-1 bg-current"></span>
+            <span className="text-xl font-black">{plainDateStr(end)}</span>
+          </>
+        )}
+        <span className="mt-2 text-xs opacity-60">{timeLabel}</span>
+      </div>
+
+      <div className="flex flex-grow flex-col gap-2 p-4">
+        <div className="flex items-center justify-between">
           <Link
             to="/sports/$sportId"
             params={{ sportId: sportId ?? "" }}
-            className="underline"
+            className="underline text-sm"
           >
             {event.sport}
           </Link>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-2 pb-2">
-        <p className="text-sm">{event.description}</p>
-        <p className="text-sm">
-          <strong>Дисциплины:</strong>{" "}
-          {event.discipline.length > 0
-            ? event.discipline.join(", ")
-            : "Не указаны"}
-        </p>
-        <p className="text-sm">
-          <strong>Ограничения:</strong>
-          <span className="mx-2 inline">{getGenderIcon()}</span>
-          {event.age_min !== null && event.age_max !== null
-            ? `${event.age_min} - ${event.age_max} лет`
-            : "Без ограничений"}
-        </p>
-        <p className="text-sm">
-          <strong>Даты:</strong>{" "}
-          {new Date(event.start_date).toLocaleDateString("ru-RU")} -{" "}
-          {new Date(event.end_date).toLocaleDateString("ru-RU")}
-        </p>
-        <p className="text-sm">
-          <strong>Участников:</strong>{" "}
-          {event.participant_count !== null
-            ? `${event.participant_count} чел.`
-            : "Не указано"}
-        </p>
-        <p className="text-sm">
-          <strong>Место проведения:</strong>{" "}
-          {event.location.map((l, index) => (
-            <span key={index}>
-              {l.city}, {l.region}, {l.country}
-              {index < event.location.length - 1 && ", "}
-            </span>
+          <p className="text-xs text-gray-500">СМ №{event.ekp_id}</p>
+        </div>
+        <h4 className="text-xl font-bold">{event.title}</h4>
+        <div className="flex gap-1">
+          {event.location.map((loc, i) => (
+            <Badge
+              className="flex items-center gap-1 text-xs"
+              variant="outline"
+              key={i}
+            >
+              <MapPin size={18} />
+              <span>{locationText(loc)}</span>
+            </Badge>
           ))}
-        </p>
-      </CardContent>
-      <CardFooter className="flex items-center justify-between">
-        <EventSubscribeButton event={event} />
-        <p className="text-xs text-gray-500">№ ЕКП: {event.ekp_id}</p>
-      </CardFooter>
-    </Card>
+          {event.participant_count && (
+            <Badge
+              className="flex items-center gap-1 text-xs"
+              variant="outline"
+            >
+              <Users size={18} />
+              <span>{`${event.participant_count} чел.`}</span>
+            </Badge>
+          )}
+          {(event.gender || age) && (
+            <Badge
+              className="flex items-center gap-1 text-xs"
+              variant="outline"
+            >
+              {event.gender === "male" ? (
+                <ImMan className="inline text-blue-500" size={18} />
+              ) : event.gender === "female" ? (
+                <ImWoman className="inline text-pink-500" size={18} />
+              ) : null}
+              {age && <span>{ageText(event.age_min, event.age_max)}</span>}
+            </Badge>
+          )}
+        </div>
+
+        {event.description && (
+          <p className="break-words line-clamp-1 overflow-hidden overflow-ellipsis min-w-0">{event.description}</p>
+        )}
+
+        {event.discipline.length > 0 && (
+          <>
+            <Separator />
+            <div className="flex flex-wrap gap-2">
+              <span className="text-sm font-bold">Дисциплины:</span>
+              {event.discipline.slice(0, 3).map((d) => (
+                <Badge className="text-xs" variant="outline" key={d}>
+                  {d}
+                </Badge>
+              ))}
+              {event.discipline.length > 3 && (
+                <Badge className="text-xs" variant="outline">
+                  {`+${event.discipline.length - 3}`}
+                </Badge>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

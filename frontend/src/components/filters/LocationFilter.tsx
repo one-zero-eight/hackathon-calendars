@@ -19,7 +19,7 @@ import { Filters } from "@/lib/types";
 import { useEffect, useMemo, useState } from "react";
 import { Badge } from "../ui/badge";
 import { useDebounce } from "react-use";
-import { cn } from "@/lib/utils";
+import { cn, locationText } from "@/lib/utils";
 
 type FlatLocation = {
   t: "country" | "region" | "city";
@@ -35,7 +35,7 @@ type LocationFilterItem = Exclude<
 const filterItemToFlat = (i: LocationFilterItem): FlatLocation => {
   return {
     t: i.city ? "city" : i.region ? "region" : "country",
-    name: filterName(i),
+    name: locationText(i),
     filter: i,
   };
 };
@@ -46,15 +46,6 @@ const LocBadge = ({ t }: { t: FlatLocation["t"] }) => {
       {t === "city" ? "Город" : t === "country" ? "Страна" : "Регион"}
     </Badge>
   );
-};
-
-const joinName = (parts: (string | undefined | null)[]) =>
-  parts.filter(Boolean).join(", ");
-
-const filterName = (i: LocationFilterItem) => {
-  if (i.country === "Россия" && (i.city || i.region))
-    return joinName([i.region, i.city]);
-  return joinName([i.country, i.region, i.city]);
 };
 
 const compItems = (a: LocationFilterItem, b: LocationFilterItem) =>
@@ -77,7 +68,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
       const filter = { country: x.country };
       if (filter.country) {
         flat.push({
-          name: filterName(filter),
+          name: locationText(filter),
           t: "country",
           filter,
         });
@@ -86,7 +77,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
         const filter = { country: x.country, region: y.region };
         if (filter.region) {
           flat.push({
-            name: filterName(filter),
+            name: locationText(filter),
             t: "region",
             filter,
           });
@@ -95,7 +86,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
           const filter = { country: x.country, region: y.region, city: z };
           if (filter.city) {
             flat.push({
-              name: filterName(filter),
+              name: locationText(filter),
               t: "city",
               filter,
             });
@@ -142,7 +133,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
     else onChange([...value, l]);
   };
 
-  const label = value.length === 0 ? "Любое" : value.map(filterName).join(", ");
+  const label = value.length === 0 ? "Любое" : value.map(locationText).join(", ");
 
   return (
     <BaseFilter {...rest}>
