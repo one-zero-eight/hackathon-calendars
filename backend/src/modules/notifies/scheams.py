@@ -11,7 +11,7 @@ class NotificationOption(BaseModel):
         auth: str
 
     endpoint: str
-    expiration_time: datetime
+    expiration_time: datetime | None = None
     keys: Keys
 
 
