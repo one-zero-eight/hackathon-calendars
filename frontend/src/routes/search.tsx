@@ -1,6 +1,8 @@
 import { $api } from "@/api";
 import { EventCard } from "@/components/EventCard.tsx";
+import { ExportFiltersToCalendar } from "@/components/ExportFiltersToCalendar.tsx";
 import { AllFilters } from "@/components/filters/AllFilters";
+import { GetUrlToFilters } from "@/components/GetUrlToFilters.tsx";
 import { Input } from "@/components/ui/input";
 import { Filters } from "@/lib/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -48,9 +50,9 @@ function RouteComponent() {
   };
 
   const handleQueryChange = (newQuery: string) => {
-    setFiltersChanging(true)
-    setQuery(newQuery)
-  }
+    setFiltersChanging(true);
+    setQuery(newQuery);
+  };
 
   const { data, isLoading: dataLoading } = $api.useQuery(
     "post",
@@ -73,12 +75,16 @@ function RouteComponent() {
 
   return (
     <div className="mt-4 flex gap-4 px-4">
-      <aside className="w-[400px] flex-shrink-0 flex-grow-0 rounded-sm border p-4">
+      <aside className="flex w-[400px] flex-shrink-0 flex-grow-0 flex-col gap-4 rounded-sm border p-4">
         <AllFilters
           filters={actualFilters || {}}
           onChange={handleFiltersChange}
           className="w-full"
         />
+        <div className="flex flex-col gap-2">
+          <GetUrlToFilters filters={actualFilters} />
+          <ExportFiltersToCalendar filters={actualFilters} />
+        </div>
       </aside>
       <main className="flex flex-grow flex-col gap-2">
         <Input
