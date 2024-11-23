@@ -9,13 +9,14 @@ services:
     restart: always
     ports:
       - "8000:8000"
-  
+
   db:
     # See more: https://registry.hub.docker.com/_/mongo
     image: "mongo:8.0"
     restart: always
     volumes:
       - "mongodb:/data/db"
+      - "./dump:/dump"
     ports:
       - "27017:27017"
     healthcheck:
@@ -26,7 +27,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-mongoadmin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-secret}
-  
+
 
 volumes:
   mongodb:
