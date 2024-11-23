@@ -204,7 +204,7 @@ async def share_selection(filters: Filters, sort: Sort) -> Selection:
 
 
 @router.get(
-    "/seach/share/{selection_id}",
+    "/search/share/{selection_id}",
     responses={200: {"description": "Get selection"}, 404: {"description": "Selection not found"}},
 )
 async def get_selection(selection_id: PydanticObjectId) -> Selection:
