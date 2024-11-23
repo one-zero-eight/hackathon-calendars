@@ -130,7 +130,9 @@ function RouteComponent() {
             <Button asChild variant="outline">
               <Link
                 to="/search"
-                search={{ filters: { discipline: [{ sport: sport!.sport }] } }}
+                search={{
+                  filters: { discipline: [{ sport: sport?.sport ?? "" }] },
+                }}
               >
                 События спорта
                 <ArrowUpRight />
