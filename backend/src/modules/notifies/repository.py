@@ -15,7 +15,7 @@ class NotificationRepository:
         return await Notification.find(Notification.user_id == user_id).to_list()
 
     async def list_all_valid_notifications(self) -> list[Notification]:
-        return await Notification.find(Notification.sent is False)
+        return await Notification.find(Notification.sent is False).to_list()
 
 
 notification_repository = NotificationRepository()

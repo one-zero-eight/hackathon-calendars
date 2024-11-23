@@ -31,6 +31,7 @@ async def create_notification(notification_create: NotificationCreateReq, auth: 
             event_title=event.title,
             target_date=notification_create["notification_options"]["expiration_time"],
             user_id=user_id,
+            event_id=event.id,
             endpoint=notification_create["notification_options"]["endpoint"],
             keys=notification_create["notification_options"]["keys"],
         )
@@ -42,6 +43,7 @@ async def create_notification(notification_create: NotificationCreateReq, auth: 
             sport_title=sport.sport,
             target_date=notification_create["notification_options"]["expiration_time"],
             user_id=user_id,
+            sport_id=sport.id,
             endpoint=notification_create["notification_options"]["endpoint"],
             keys=notification_create["notification_options"]["keys"],
         )
@@ -55,3 +57,9 @@ async def get_notification(notification_id: PydanticObjectId):
     if not notification:
         raise HTTPException(status_code=404, detail="Notification not found")
     return notification
+
+
+@router.post("/my-subscriptions")
+async def get_user_subscriptions(auth: USER_AUTH) -> list[Notification]:
+    user_id = auth.user_id
+    return await notification_repository.get_notification_by_user_id(user_id)
