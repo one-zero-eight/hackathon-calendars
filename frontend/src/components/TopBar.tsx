@@ -48,7 +48,7 @@ export function TopBar() {
 
       <div className="flex items-center gap-2 px-2">
         {!me ? (
-          <Button asChild variant="ghost">
+          <Button asChild variant="link">
             <Link
               to="/auth/login"
               activeProps={{ style: { backgroundColor: "#ddd" } }}
@@ -59,7 +59,7 @@ export function TopBar() {
         ) : (
           <>
             <div className="text-lg">{me.login}</div>
-            <Button asChild variant="ghost">
+            <Button asChild variant="link">
               <Link
                 to="/profile"
                 activeProps={{ style: { backgroundColor: "#ddd" } }}
@@ -67,7 +67,7 @@ export function TopBar() {
                 Профиль
               </Link>
             </Button>
-            <Button variant="ghost" onClick={() => performLogout({})}>
+            <Button variant="link" onClick={() => performLogout({})}>
               Выйти
             </Button>
           </>
