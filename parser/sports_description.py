@@ -34,3 +34,27 @@ with open("sports_description.json", "w") as f:
     import json
 
     json.dump(sports_desc, f, ensure_ascii=False, indent=2)
+
+with open("sports.json") as f:
+    sports = json.load(f)
+
+# add description to sports.json
+for sport_obj in sports:
+    sport = sport_obj["sport"]
+    if sport in sports_desc:
+        sport_obj["description"] = sports_desc[sport]
+
+with open("sports.json", "w") as f:
+    json.dump(sports, f, ensure_ascii=False, indent=2)
+
+with open("sports.json") as f:
+    sports = json.load(f)
+
+# add description to sports.json
+for sport_obj in sports:
+    sport = sport_obj["sport"]
+    if sport in sports_desc:
+        sport_obj["description"] = sports_desc[sport]
+
+with open("sports.json", "w") as f:
+    json.dump(sports, f, ensure_ascii=False, indent=2)

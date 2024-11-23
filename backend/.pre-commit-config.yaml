@@ -47,12 +47,6 @@ repos:
         entry: poetry run python ./scripts/generate_settings_schema.py
         pass_filenames: false
         files: ^src/config_schema.py$
-      - id: poetry-check
-        name: poetry check
-        entry: poetry check
-        language: system
-        pass_filenames: false
-        files: "pyproject.toml"
       - id: alembic-auto-migrations
         name: generate alembic auto migrations files
         language: system

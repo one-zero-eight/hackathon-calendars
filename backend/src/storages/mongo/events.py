@@ -18,6 +18,14 @@ class EventLocation(BaseSchema):
     city: str | None = None
     "Название города"
 
+    def __str__(self):
+        s = self.country
+        if self.region:
+            s += f", {self.region}"
+        if self.city:
+            s += f", {self.city}"
+        return s
+
 
 class EventSchema(BaseSchema):
     ekp_id: int

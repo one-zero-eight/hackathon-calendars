@@ -1,14 +1,18 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import icalendar
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from starlette.responses import Response
 
 from src.api.exceptions import IncorrectCredentialsException
 from src.modules.events.repository import events_repository
 from src.modules.events.schemas import DateFilter, Filters, Pagination, Sort
+from src.modules.ics_utils import get_base_calendar
 from src.modules.sports.repository import sports_repository
 from src.storages.mongo.events import Event
+from src.storages.mongo.selection import Selection
 
 router = APIRouter(
     prefix="/events",
@@ -188,3 +192,75 @@ async def get_all_filters_disciplines() -> list[DisciplinesFilterVariants]:
         )
         for sport in sports
     ]
+
+
+@router.post("/search/share", responses={200: {"description": "Share selection"}})
+async def share_selection(filters: Filters, sort: Sort) -> Selection:
+    """
+    Share selection. Use this for .ics too.
+    """
+    selection = await events_repository.create_selection(filters, sort)
+    return selection
+
+
+@router.get(
+    "/seach/share/{selection_id}",
+    responses={200: {"description": "Get selection"}, 404: {"description": "Selection not found"}},
+)
+async def get_selection(selection_id: PydanticObjectId) -> Selection:
+    """
+    Get selection.
+    """
+    selection = await events_repository.read_selection(selection_id)
+    if selection is None:
+        raise HTTPException(status_code=404, detail="Selection not found")
+
+    return selection
+
+
+@router.get(
+    "/search/share/{selection_id}.ics",
+    response_class=Response,
+    responses={
+        200: {"description": "Get selection in .ics format"},
+        404: {"description": "Selection not found"},
+    },
+)
+async def get_selection_ics(selection_id: PydanticObjectId):
+    selection = await events_repository.read_selection(selection_id)
+    if selection is None:
+        raise HTTPException(status_code=404, detail="Selection not found")
+
+    date_filter = DateFilter()
+    # week before and month after
+    date_filter.start_date = datetime.now() - timedelta(days=7)
+    date_filter.end_date = datetime.now() + timedelta(days=30)
+    selection.filters.date = date_filter
+
+    events = await events_repository.read_with_filters(
+        filters=selection.filters,
+        sort=selection.sort,
+        pagination=Pagination(page_size=1000, page_no=1),
+    )
+    calendar = get_base_calendar()
+    calendar["x-wr-calname"] = "Подборка Спортивных Событий"
+
+    for event in events:
+        uid = f"{str(event.id)}@innohassle.ru"
+
+        vevent = icalendar.Event()
+        vevent.add("uid", uid)
+
+        vevent.add("summary", f"{event.sport}: {event.title}")
+        vevent.add("dtstart", icalendar.vDate(event.start_date))
+        vevent.add("dtend", icalendar.vDate(event.end_date))
+        vevent.add("description", event.description)
+        if event.location:
+            vevent.add("location", "\n".join([str(loc) for loc in event.location]))
+        calendar.add_component(vevent)
+
+    return Response(
+        content=calendar.to_ical(),
+        media_type="text/calendar",
+        headers={"Content-Disposition": 'attachment; filename="schedule.ics"'},
+    )

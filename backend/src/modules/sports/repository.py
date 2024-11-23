@@ -1,11 +1,13 @@
 __all__ = ["sports_repository"]
 
+from beanie import PydanticObjectId
+
 from src.storages.mongo.sports import Sport
 
 
 # noinspection PyMethodMayBeStatic
 class SportsRepository:
-    async def read_one(self, id: str) -> Sport | None:
+    async def read_one(self, id: PydanticObjectId) -> Sport | None:
         return await Sport.get(id)
 
     async def read_all(self) -> list[Sport] | None:

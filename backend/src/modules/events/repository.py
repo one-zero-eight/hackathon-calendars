@@ -6,6 +6,7 @@ from beanie.odm.operators.find.logical import And, Or
 
 from src.modules.events.schemas import Filters, Pagination, Sort
 from src.storages.mongo.events import Event
+from src.storages.mongo.selection import Selection
 
 
 # noinspection PyMethodMayBeStatic
@@ -113,6 +114,14 @@ class EventsRepository:
 
         # Return results
         return await query.to_list()
+
+    async def create_selection(self, filters: Filters, sort: Sort):
+        selection = Selection(filters=filters, sort=sort)
+        await selection.insert()
+        return selection
+
+    async def read_selection(self, id_: PydanticObjectId) -> Selection | None:
+        return await Selection.get(id_)
 
 
 events_repository: EventsRepository = EventsRepository()
