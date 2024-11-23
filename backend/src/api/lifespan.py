@@ -88,11 +88,11 @@ async def push_notification():
             if sent_notification_number == 0:
                 if notification.event_title is not None:
                     await notification_repository.make_sent_notifications_by_filter(
-                        Filter(event_title=notification.event_title, user_id=notification.user_id)
+                        Filter(event_title=[notification.event_title], user_id=notification.user_id)
                     )
                 elif notification.sport_title is not None:
                     await notification_repository.make_sent_notifications_by_filter(
-                        Filter(sport_title=notification.sport_title, user_id=notification.user_id)
+                        Filter(sport_title=[notification.sport_title], user_id=notification.user_id)
                     )
 
         print("🚀 PUSH JOB FINISHED")
