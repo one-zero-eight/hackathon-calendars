@@ -3,6 +3,7 @@ import { Calendar } from "@/components/Calendar";
 import { AllFilters } from "@/components/filters/AllFilters";
 import { Separator } from "@/components/ui/separator";
 import { Filters } from "@/lib/types";
+import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Temporal } from "temporal-polyfill";
@@ -74,16 +75,12 @@ function RouteComponent() {
         onYearChange={setYear}
         countByMonth={countByMonth}
         onMonthSelect={(y, m) => {
-          const [startDate, endDate] = monthRanges(y, m);
           navigate({
             to: "/search",
             search: {
               filters: {
                 ...filters,
-                date: {
-                  start_date: startDate.toString(),
-                  end_date: endDate.toString(),
-                },
+                date: plainDatesForFilter(...monthRanges(y, m)),
               },
             },
           });

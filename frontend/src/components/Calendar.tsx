@@ -91,7 +91,11 @@ export function Calendar({
             <span className="text-xl">{MONTH_NAMES[idx]}</span>
             <Badge
               variant="secondary"
-              className="bg-green-100 group-hover:bg-green-200"
+              className={cn(
+                (countByMonth[idx] ?? 0) > 0
+                  ? "bg-green-100 group-hover:bg-green-200"
+                  : "bg-stone-100 group-hover:bg-stone-200",
+              )}
             >
               {`${countByMonth[idx] ?? "—"} мероприятий`}
             </Badge>
