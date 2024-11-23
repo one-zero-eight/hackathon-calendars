@@ -80,7 +80,6 @@ function RouteComponent() {
       },
     },
   );
-  console.log(JSON.stringify(debouncedFilters), JSON.stringify(actualFilters));
 
   const loading = dataLoading || filtersChanging;
 
