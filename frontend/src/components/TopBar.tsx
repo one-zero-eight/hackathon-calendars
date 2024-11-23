@@ -16,29 +16,56 @@ export function TopBar() {
     <div className="flex h-12 w-full justify-between border-b-[1px]">
       <div className="flex items-center gap-2 px-2">
         <Button asChild variant="link">
-          <Link to="/">Главная</Link>
+          <Link to="/" activeProps={{ style: { backgroundColor: "#ddd" } }}>
+            Главная
+          </Link>
         </Button>
         <Button asChild variant="link">
-          <Link to="/sports">Виды спорта</Link>
+          <Link
+            to="/sports"
+            activeProps={{ style: { backgroundColor: "#ddd" } }}
+          >
+            Виды спорта
+          </Link>
         </Button>
         <Button asChild variant="link">
-          <Link to="/calendar">Календарь</Link>
+          <Link
+            to="/calendar"
+            activeProps={{ style: { backgroundColor: "#ddd" } }}
+          >
+            Календарь
+          </Link>
         </Button>
         <Button asChild variant="link">
-          <Link to="/search">Поиск</Link>
+          <Link
+            to="/search"
+            activeProps={{ style: { backgroundColor: "#ddd" } }}
+          >
+            Поиск
+          </Link>
         </Button>
       </div>
 
       <div className="flex items-center gap-2 px-2">
         {!me ? (
           <Button asChild variant="ghost">
-            <Link to="/auth/login">Войти</Link>
+            <Link
+              to="/auth/login"
+              activeProps={{ style: { backgroundColor: "#ddd" } }}
+            >
+              Войти
+            </Link>
           </Button>
         ) : (
           <>
             <div className="text-lg">{me.login}</div>
             <Button asChild variant="ghost">
-              <Link to="/profile">Профиль</Link>
+              <Link
+                to="/profile"
+                activeProps={{ style: { backgroundColor: "#ddd" } }}
+              >
+                Профиль
+              </Link>
             </Button>
             <Button variant="ghost" onClick={() => performLogout({})}>
               Выйти
