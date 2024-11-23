@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ArrowDown, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import CountUp from "react-countup";
 import Marquee from "react-fast-marquee";
@@ -65,8 +65,8 @@ function RouteComponent() {
   }, [sports]);
 
   return (
-    <main className="w-full">
-      <section className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center justify-center">
+    <main className="flex w-full flex-col">
+      <section className="flex min-h-[calc(100vh-var(--header-height)-64px)] flex-col items-center justify-center">
         <img src="/favicon.png" className="-mt-36 mb-8 h-48 w-48" />
         <h1 className="mb-4 text-center text-6xl font-medium tracking-tight">
           Единый Календарь Спорта
@@ -131,6 +131,21 @@ function RouteComponent() {
           </Button>
         </div>
       </section>
+
+      <Button
+        asChild
+        size="icon"
+        variant="ghost"
+        className="h-16 w-16 cursor-pointer self-center text-gray-500"
+        onClick={() =>
+          window.scrollTo({
+            top: window.innerHeight,
+            behavior: "smooth",
+          })
+        }
+      >
+        <ArrowDown />
+      </Button>
 
       <section className="py-4">
         <h2 className="text-center text-2xl font-medium">
