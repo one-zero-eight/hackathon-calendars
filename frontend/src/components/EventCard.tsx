@@ -107,7 +107,7 @@ export function EventCard({ event }: { event: Event }) {
           </Button>
         </div>
         <h4 className="text-xl font-bold">{event.title}</h4>
-        <div className="flex gap-1">
+        <div className="flex gap-1 flex-wrap">
           {event.location.map((loc, i) => (
             <a
               key={i}
