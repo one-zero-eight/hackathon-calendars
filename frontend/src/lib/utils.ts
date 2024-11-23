@@ -96,3 +96,29 @@ export function pluralize<T>(n: number, one: T, few: T, many: T): T {
   if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return few;
   return many;
 }
+
+export const normalizeFilters = (f: Filters): Filters => {
+  const { age, date, gender, participant_count, ...rest } = f;
+  const out: Filters = { ...rest };
+  if (age?.min != null || age?.max != null) {
+    out.age = {};
+    if (age.min != null) out.age.min = age.min;
+    if (age.max != null) out.age.max = age.max;
+  }
+  if (participant_count?.min != null || participant_count?.max != null) {
+    out.participant_count = {};
+    if (participant_count.min != null)
+      out.participant_count.min = participant_count.min;
+    if (participant_count.max != null)
+      out.participant_count.max = participant_count.max;
+  }
+  if (date?.start_date || date?.end_date) {
+    out.date = {};
+    if (date.start_date) out.date.start_date = date.start_date;
+    if (date.end_date) out.date.end_date = date.end_date;
+  }
+  if (gender) {
+    out.gender = gender;
+  }
+  return out;
+};

@@ -3,7 +3,7 @@ import { Calendar } from "@/components/Calendar";
 import { AllFilters } from "@/components/filters/AllFilters";
 import { Separator } from "@/components/ui/separator";
 import { Filters } from "@/lib/types";
-import { plainDatesForFilter } from "@/lib/utils";
+import { normalizeFilters, plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Temporal } from "temporal-polyfill";
@@ -48,7 +48,7 @@ function RouteComponent() {
     "post",
     "/events/search/count-by-month",
     {
-      body: completeFilters,
+      body: normalizeFilters(completeFilters),
     },
   );
 

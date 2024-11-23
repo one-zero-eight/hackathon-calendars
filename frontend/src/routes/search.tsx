@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Filters } from "@/lib/types";
-import { plainDatesForFilter } from "@/lib/utils";
+import { normalizeFilters, plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
@@ -94,7 +94,7 @@ function RouteComponent() {
     "/events/search",
     {
       body: {
-        filters: debouncedFilters || {},
+        filters: normalizeFilters(debouncedFilters || {}),
         pagination: {
           page_no: 1,
           page_size: 100,

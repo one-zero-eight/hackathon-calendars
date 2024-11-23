@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn, plainDatesForFilter } from "@/lib/utils.ts";
+import { cn, normalizeFilters, plainDatesForFilter } from "@/lib/utils.ts";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowUpRight, ChevronsUpDown, Link as LinkIcon } from "lucide-react";
 import { Temporal } from "temporal-polyfill";
@@ -39,10 +39,10 @@ function RouteComponent() {
     "/events/search",
     {
       body: {
-        filters: {
+        filters: normalizeFilters({
           date: plainDatesForFilter(Temporal.Now.plainDateISO(), null),
           discipline: [{ sport: sport?.sport ?? "" }],
-        },
+        }),
         pagination: { page_size: 100, page_no: 1 },
         sort: {
           date: "asc",
