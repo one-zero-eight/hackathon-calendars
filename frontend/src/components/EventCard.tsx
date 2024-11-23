@@ -1,5 +1,5 @@
 import { $api, apiTypes } from "@/api";
-import { Button } from "@/components/ui/button.tsx";
+import { EventSubscribeButton } from "@/components/EventSubscribeButton.tsx";
 import {
   Card,
   CardContent,
@@ -93,9 +93,7 @@ export function EventCard({ event }: { event: apiTypes.SchemaEventOutput }) {
         </p>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
-        <Button className="w-fit" variant="secondary">
-          Подписаться
-        </Button>
+        <EventSubscribeButton event={event} />
         <p className="text-xs text-gray-500">№ ЕКП: {event.ekp_id}</p>
       </CardFooter>
     </Card>
