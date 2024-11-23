@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from fastapi import APIRouter
+from beanie import PydanticObjectId
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from src.api.exceptions import IncorrectCredentialsException
@@ -26,12 +27,15 @@ async def get_all_events() -> list[Event]:
     return await events_repository.read_all()
 
 
-@router.get("/{id}", responses={200: {"description": "Info about event"}})
-async def get_event(id: str) -> Event:
+@router.get("/{id}", responses={200: {"description": "Info about event"}, 404: {"description": "Event not found"}})
+async def get_event(id: PydanticObjectId) -> Event:
     """
     Get info about one event.
     """
-    return await events_repository.read_one(id)
+    e = await events_repository.read_one(id)
+    if e is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return e
 
 
 @router.post("/", responses={200: {"description": "Create many events"}})

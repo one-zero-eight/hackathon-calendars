@@ -1,6 +1,6 @@
 __all__ = ["events_repository"]
 
-from beanie import SortDirection
+from beanie import PydanticObjectId, SortDirection
 from beanie.odm.operators.find.comparison import GTE, LTE, Eq, In
 from beanie.odm.operators.find.logical import And, Or
 
@@ -10,7 +10,7 @@ from src.storages.mongo.events import Event
 
 # noinspection PyMethodMayBeStatic
 class EventsRepository:
-    async def read_one(self, id: str) -> Event | None:
+    async def read_one(self, id: PydanticObjectId) -> Event | None:
         return await Event.get(id)
 
     async def read_all(self) -> list[Event] | None:
