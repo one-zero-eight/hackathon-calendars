@@ -3,14 +3,20 @@ import { Button } from "@/components/ui/button.tsx";
 import { CalendarPlus } from "lucide-react";
 import { useState } from "react";
 
-export function ExportSportToCalendar({ sportId }: { sportId: string }) {
+export function ExportSportToCalendar({
+  sportId,
+  className,
+}: {
+  sportId: string;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Button className="w-full" onClick={() => setOpen(true)}>
+      <Button className={className} onClick={() => setOpen(true)}>
         <CalendarPlus />
-        Экспортировать мероприятия в календарь
+        Добавить в календарь
       </Button>
       <ExportSportToCalendarDialog
         open={open}

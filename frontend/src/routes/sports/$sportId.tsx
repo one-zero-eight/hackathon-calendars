@@ -1,125 +1,135 @@
 import { $api } from "@/api";
-import { EventCard } from "@/components/EventCard.tsx";
 import { ExportSportToCalendar } from "@/components/ExportSportToCalendar.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { Card, CardContent, CardTitle } from "@/components/ui/card.tsx";
 import { cn } from "@/lib/utils.ts";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import SportSVG from "./sport.svg";
+import { Separator } from "@/components/ui/separator";
+import {
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronsUpDown } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/sports/$sportId")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const { sportId } = Route.useParams();
-  const { data: sport } = $api.useQuery("get", "/sports/{id}", {
+  const { data: sport, isLoading } = $api.useQuery("get", "/sports/{id}", {
     params: { path: { id: sportId } },
   });
-  const { data: events } = $api.useQuery(
-    "post",
-    "/events/search",
-    {
-      body: {
-        filters: {
-          discipline: [
-            {
-              sport: sport?.sport ?? "",
-            },
-          ],
+
+  const avatarUrl = sport
+    ? `/api/static/${sport.sport.toLocaleLowerCase().replace(" ", "_")}.png`
+    : null;
+
+  const handleDisciplineSelect = (d: string) => {
+    if (sport) {
+      navigate({
+        to: "/search",
+        search: {
+          filters: {
+            discipline: [{ sport: sport.sport, discipline: d }],
+          },
         },
-        sort: {
-          date: "asc",
-        },
-        pagination: { page_no: 1, page_size: 100 },
-      },
-    },
-    {
-      enabled: !!sport,
-    },
-  );
+        replace: false,
+      });
+    }
+  };
 
   return (
-    <div className="flex w-full flex-col gap-2 p-4 lg:flex-row">
-      <Card className="flex w-full flex-col gap-2 p-4">
-        <div className="flex justify-center rounded-xl bg-black">
-          <img
-            src={`/api/static/${sport?.sport.toLocaleLowerCase().replace(" ", "_")}.png`}
-            onError={(e) => {
-              // @ts-ignore
-              e.target.onerror = null;
-              // @ts-ignore
-              e.target.src = SportSVG;
-            }}
-            className="h-[350px] w-[350px]"
-          />
+    <div className="mx-auto mt-6 flex w-full max-w-[960px] flex-col">
+      <div className="flex flex-col gap-4 rounded-lg border px-8 py-4">
+        <div className="flex items-center gap-6">
+          <div className="h-[128px] w-[128px] flex-shrink-0 flex-grow-0 overflow-hidden rounded-full">
+            {isLoading ? (
+              <Skeleton className="h-full w-full" />
+            ) : (
+              <img
+                src={avatarUrl ?? ""}
+                onError={(e) => {
+                  if (avatarUrl) {
+                    // @ts-ignore
+                    e.target.src = SportSVG;
+                  }
+                }}
+                className={cn(
+                  "h-full w-full bg-black",
+                  !avatarUrl && "invisible",
+                )}
+              />
+            )}
+          </div>
+          <div className="flex flex-grow flex-col">
+            {isLoading ? (
+              <>
+                <Skeleton className="mb-3 h-10 w-[150px]" />
+                <Skeleton className="h-12 w-full" />
+              </>
+            ) : (
+              <>
+                <h1 className="mb-1 text-3xl font-medium">{sport?.sport}</h1>
+                <p>{sport?.description}</p>
+              </>
+            )}
+          </div>
         </div>
-        <CardTitle className="text-4xl">{sport?.sport}</CardTitle>
-        <CardContent className="px-0">
-          <div className="rounded-xl border-2 p-4 text-lg">
-            {sport?.description}
-          </div>
-          <div className="mt-4 flex-row">
-            <ExportSportToCalendar sportId={sportId} />
-          </div>
-          <div className="mt-4 text-2xl font-semibold">
-            Всего дисциплин: {sport?.disciplines.length}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {sport?.disciplines
-              .sort((a, b) => a.localeCompare(b))
-              .map((discipline, i) => {
-                const count = events?.events.filter((event) =>
-                  event.discipline.includes(discipline),
-                ).length;
+        <Separator />
+        <div className="flex items-stretch">
+          {isLoading ? (
+            <Skeleton className="w-[225px]" />
+          ) : (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className="w-fit justify-between"
+                >
+                  <span>{`События по ${sport?.disciplines.length || ""} дисциплинам`}</span>
+                  <ChevronsUpDown className="opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <Command>
+                  <CommandInput
+                    placeholder="Поиск дисциплины.."
+                    className="h-9"
+                  />
+                  <CommandList>
+                    <CommandGroup>
+                      {sport?.disciplines.map((discipline, i) => {
+                        return (
+                          <CommandItem
+                            key={i}
+                            value={discipline}
+                            onSelect={handleDisciplineSelect}
+                          >
+                            <span>{discipline}</span>
+                          </CommandItem>
+                        );
+                      })}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          )}
 
-                return (
-                  <Button
-                    asChild
-                    key={i}
-                    className={cn(
-                      "justify-start px-4 py-2",
-                      count ? "bg-green-100 hover:bg-green-200" : null,
-                    )}
-                    variant="outline"
-                  >
-                    <Link
-                      to="/search"
-                      search={{
-                        filters: {
-                          discipline: [
-                            { sport: sport?.sport ?? "", discipline },
-                          ],
-                        },
-                      }}
-                    >
-                      {discipline}
-                      {count ? <> - {count} мероприятий</> : null}
-                    </Link>
-                  </Button>
-                );
-              })}
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="flex w-full flex-col gap-2">
-        <div className="flex justify-between pl-6 text-2xl font-semibold">
-          <div>Мероприятий в 2024 году: {events?.events.length}</div>
-          <Button asChild className="px-4 py-2 text-lg" variant="default">
-            <Link
-              to="/search"
-              search={{
-                filters: { discipline: [{ sport: sport?.sport ?? "" }] },
-              }}
-            >
-              В поиск
-            </Link>
-          </Button>
+          <ExportSportToCalendar sportId={sportId} className="ml-auto w-fit" />
         </div>
-        {events?.events.map((event) => (
-          <EventCard event={event} key={event.id} />
-        ))}
       </div>
     </div>
   );
