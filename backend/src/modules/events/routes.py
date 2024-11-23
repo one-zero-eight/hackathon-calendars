@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from fastapi import APIRouter
 from pydantic import BaseModel
 
 from src.api.exceptions import IncorrectCredentialsException
 from src.modules.events.repository import events_repository
-from src.modules.events.schemas import Filters, Pagination, Sort
+from src.modules.events.schemas import DateFilter, Filters, Pagination, Sort
 from src.modules.sports.repository import sports_repository
 from src.storages.mongo.events import Event
 
@@ -80,6 +82,30 @@ async def count_events(filters: Filters) -> int:
     """
     count = await events_repository.read_with_filters(filters, Sort(), Pagination(page_size=0, page_no=0), count=True)
     return count
+
+
+@router.post("/search/count-by-month", responses={200: {"description": "Count events by months"}})
+async def count_events_by_month(filters: Filters) -> dict[str, int]:
+    """
+    Count filtered events by months.
+    """
+
+    counts = {}
+    current_year = datetime.now().year
+    for i in range(1, 13):
+        date_filter = DateFilter()
+        date_filter.start_date = datetime(current_year, month=i, day=1)
+        if i == 12:
+            date_filter.end_date = datetime(current_year + 1, month=1, day=1)
+        else:
+            date_filter.end_date = datetime(current_year, month=i + 1, day=1)
+        filters.date = date_filter
+        count = await events_repository.read_with_filters(
+            filters, Sort(), Pagination(page_size=0, page_no=0), count=True
+        )
+        counts[f"{current_year}-{i:02d}"] = count
+
+    return counts
 
 
 class RegionsFilterVariants(BaseModel):
