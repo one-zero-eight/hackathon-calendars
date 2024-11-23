@@ -18,7 +18,7 @@ from src.modules.notifies.repository import notification_repository
 from src.modules.notifies.scheams import Filter
 from src.storages.mongo import document_models
 
-WAIT_MIN = 0.5
+WAIT_MIN = 1440
 VAPID_PRIVATE_KEY = "lkjHIc-u8DMZXfJu-PbY-xTitElQuGQcRr-tCvQtN5c"
 
 
