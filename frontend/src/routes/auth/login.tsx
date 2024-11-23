@@ -2,16 +2,21 @@ import { $api } from "@/api";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 export const Route = createFileRoute("/auth/login")({
   component: RouteComponent,
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      redirectTo: (search.redirect as string | undefined) || undefined,
+    };
+  },
 });
 
 function RouteComponent() {
-  const navigate = useNavigate();
+  const { redirectTo } = Route.useSearch();
 
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +30,7 @@ function RouteComponent() {
     isPending: isPendingLogin,
   } = $api.useMutation("post", "/users/login", {
     onSettled: () => queryClient.resetQueries(),
-    onSuccess: () => navigate({ to: "/" }),
+    onSuccess: () => window.location.assign(redirectTo || "/"),
   });
   const {
     mutate: performRegister,
@@ -34,7 +39,7 @@ function RouteComponent() {
     isPending: isPendingRegister,
   } = $api.useMutation("post", "/users/register", {
     onSettled: () => queryClient.resetQueries(),
-    onSuccess: () => navigate({ to: "/" }),
+    onSuccess: () => window.location.assign(redirectTo || "/"),
   });
 
   const onSubmit = (e: FormEvent) => {
