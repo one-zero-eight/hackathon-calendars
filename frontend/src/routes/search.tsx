@@ -42,9 +42,12 @@ function RouteComponent() {
     () => {
       setDebouncedFilters(actualFilters);
       setFiltersChanging(false);
+      const newFilters = { ...actualFilters, query: query || undefined };
       navigate({
         to: "/search",
-        search: { filters: { ...actualFilters, query } },
+        search: {
+          filters: Object.keys(newFilters).length ? newFilters : undefined,
+        },
       });
     },
     300,
@@ -61,7 +64,7 @@ function RouteComponent() {
     setQuery(newQuery);
   };
 
-  const { data, isLoading: dataLoading } = $api.useQuery(
+  const { data, isPending: dataLoading } = $api.useQuery(
     "post",
     "/events/search",
     {
@@ -77,6 +80,7 @@ function RouteComponent() {
       },
     },
   );
+  console.log(JSON.stringify(debouncedFilters), JSON.stringify(actualFilters));
 
   const loading = dataLoading || filtersChanging;
 
@@ -101,11 +105,20 @@ function RouteComponent() {
           placeholder="Название, вид спорта, город..."
         />
         {loading ? (
-          <span>Загрузка...</span>
+          <div className="flex h-full min-h-[300px] w-full animate-pulse flex-col gap-4">
+            <div className="h-[200px] rounded-md bg-gray-200" />
+            <div className="h-[200px] rounded-md bg-gray-200" />
+            <div className="h-[200px] rounded-md bg-gray-200" />
+            <div className="h-[200px] rounded-md bg-gray-200" />
+            <div className="h-[200px] rounded-md bg-gray-200" />
+            <div className="h-[200px] rounded-md bg-gray-200" />
+          </div>
         ) : data?.events.length ? (
           data.events.map((event) => <EventCard key={event.id} event={event} />)
         ) : (
-          <span>Ничего не найдено</span>
+          <div className="flex h-[200px] w-full items-center justify-center">
+            Ничего не найдено
+          </div>
         )}
       </main>
     </div>
