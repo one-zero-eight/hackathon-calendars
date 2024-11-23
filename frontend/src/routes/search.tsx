@@ -31,7 +31,6 @@ function RouteComponent() {
 
   useDebounce(
     () => {
-      console.log("debounced");
       setDebouncedFilters(actualFilters);
       setFiltersChanging(false);
       navigate({
