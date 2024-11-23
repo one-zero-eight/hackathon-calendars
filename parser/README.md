@@ -11,8 +11,16 @@
 
 > [!IMPORTANT]
 > Точность извлечения таблиц (TEA): 99.34%
+> 
 > Обработано 2500 страниц за 6 минут
-> Извлечена информация о 14000 событиях в 152 видов спорта
+> 
+> Извлечена информация о 14000 событиях в 152 видах спорта
+
+![image](https://github.com/user-attachments/assets/3c133607-0b72-4c34-9f74-93942c97a7fc)
+
+![image](https://github.com/user-attachments/assets/ec7fd15b-8a90-4580-859d-1e4ea663668d)
+
+![image](https://github.com/user-attachments/assets/fb0b8b46-e557-4878-8113-2c8add262b96)
 
 ---
 
