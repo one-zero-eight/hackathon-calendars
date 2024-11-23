@@ -22,6 +22,12 @@ export async function receivePushSubscription() {
     return false;
   }
 
+  const existing = await registration.pushManager.getSubscription();
+  if (existing) {
+    console.log("existing", JSON.stringify(existing));
+    return existing;
+  }
+
   const pushSubscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: import.meta.env.VITE_NOTIFY_PUBLIC_KEY,

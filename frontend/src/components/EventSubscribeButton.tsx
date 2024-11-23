@@ -5,6 +5,8 @@ import {
   sendNotification,
 } from "@/api/notifications.ts";
 import { NotificationsDialog } from "@/components/NotificationsDialog.tsx";
+import { NotificationsOkDialog } from "@/components/NotificationsOkDialog.tsx";
+import { NotificationsPastDialog } from "@/components/NotificationsPastDialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useNavigate } from "@tanstack/react-router";
 import { BellPlus } from "lucide-react";
@@ -18,8 +20,12 @@ export function EventSubscribeButton({
   const navigate = useNavigate();
 
   const { data: me } = useMe();
-  const { mutate } = $api.useMutation("post", "/notify/");
+  const { mutate } = $api.useMutation("post", "/notify/", {
+    onSuccess: () => setOkDialogOpen(true),
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [okDialogOpen, setOkDialogOpen] = useState(false);
+  const [pastDialogOpen, setPastDialogOpen] = useState(false);
 
   const subscribe = async () => {
     if (!me) {
@@ -37,6 +43,12 @@ export function EventSubscribeButton({
     }
 
     setDialogOpen(false);
+
+    if (new Date(event.start_date) < new Date()) {
+      setPastDialogOpen(true);
+      return;
+    }
+
     sendNotification();
     mutate({
       body: {
@@ -64,6 +76,11 @@ export function EventSubscribeButton({
         open={dialogOpen}
         setOpen={setDialogOpen}
         retry={() => subscribe()}
+      />
+      <NotificationsOkDialog open={okDialogOpen} setOpen={setOkDialogOpen} />
+      <NotificationsPastDialog
+        open={pastDialogOpen}
+        setOpen={setPastDialogOpen}
       />
     </>
   );
