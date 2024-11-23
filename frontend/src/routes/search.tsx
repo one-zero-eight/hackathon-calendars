@@ -3,11 +3,16 @@ import { EventCard } from "@/components/EventCard.tsx";
 import { ExportFiltersToCalendar } from "@/components/ExportFiltersToCalendar.tsx";
 import { AllFilters } from "@/components/filters/AllFilters";
 import { GetUrlToFilters } from "@/components/GetUrlToFilters.tsx";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Filters } from "@/lib/types";
+import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
+import { Temporal } from "temporal-polyfill";
 
 export const Route = createFileRoute("/search")({
   component: RouteComponent,
@@ -19,14 +24,22 @@ export const Route = createFileRoute("/search")({
   },
 });
 
+const getInitialFilters: () => Filters = () => ({
+  date: plainDatesForFilter(Temporal.Now.plainDateISO(), null),
+});
+
 function RouteComponent() {
   const navigate = useNavigate();
   const { filters: routeFilters, share } = Route.useSearch();
-  const [actualFilters, setActualFilters] = useState<Filters>();
+  const [actualFilters, setActualFilters] = useState<Filters | undefined>(
+    getInitialFilters,
+  );
   const [filtersChanging, setFiltersChanging] = useState(false);
-  const [debouncedFilters, setDebouncedFilters] = useState<Filters>();
+  const [debouncedFilters, setDebouncedFilters] = useState<Filters | undefined>(
+    actualFilters,
+  );
   const [query, setQuery] = useState("");
-  const { data: shareFilters } = $api.useQuery(
+  const { data: shareFilters, isLoading: sharedLoading } = $api.useQuery(
     "get",
     "/events/search/share/{selection_id}",
     { params: { path: { selection_id: share ?? "" } } },
@@ -34,21 +47,26 @@ function RouteComponent() {
   );
 
   useEffect(() => {
-    setActualFilters(shareFilters?.filters ?? routeFilters);
-    setQuery(shareFilters?.filters?.query ?? routeFilters?.query ?? "");
+    const newFilters = shareFilters?.filters ?? routeFilters;
+    if (newFilters) {
+      setActualFilters(newFilters);
+      setQuery(newFilters.query ?? "");
+    }
   }, [routeFilters, shareFilters]);
 
   useDebounce(
     () => {
       setDebouncedFilters(actualFilters);
       setFiltersChanging(false);
-      const newFilters = { ...actualFilters, query: query || undefined };
-      navigate({
-        to: "/search",
-        search: {
-          filters: Object.keys(newFilters).length ? newFilters : undefined,
-        },
-      });
+      if (!sharedLoading) {
+        const newFilters = { ...actualFilters, query: query || undefined };
+        navigate({
+          to: "/search",
+          search: {
+            filters: Object.keys(newFilters).length ? newFilters : undefined,
+          },
+        });
+      }
     },
     300,
     [actualFilters, query, filtersChanging],
@@ -62,6 +80,13 @@ function RouteComponent() {
   const handleQueryChange = (newQuery: string) => {
     setFiltersChanging(true);
     setQuery(newQuery);
+  };
+
+  const handleResetFilters = () => {
+    const initial = getInitialFilters();
+    setActualFilters(initial);
+    setDebouncedFilters(initial);
+    setQuery("");
   };
 
   const { data, isPending: dataLoading } = $api.useQuery(
@@ -79,46 +104,70 @@ function RouteComponent() {
         },
       },
     },
+    { enabled: !filtersChanging && !sharedLoading },
   );
 
-  const loading = dataLoading || filtersChanging;
+  const loading = dataLoading || filtersChanging || sharedLoading;
 
   return (
-    <div className="mt-4 flex gap-4 px-4">
-      <aside className="flex h-fit w-[400px] flex-shrink-0 flex-grow-0 flex-col gap-4 rounded-sm border p-4">
-        <AllFilters
-          filters={actualFilters || {}}
-          onChange={handleFiltersChange}
-          className="w-full"
-        />
-        <div className="flex flex-col gap-2">
-          <GetUrlToFilters filters={actualFilters} sort={{}} />
-          <ExportFiltersToCalendar filters={actualFilters} />
+    <div
+      className="flex gap-4 pl-[var(--sidebar-width)]"
+      style={
+        {
+          "--sidebar-width": "400px",
+        } as React.CSSProperties
+      }
+    >
+      <aside className="fixed left-0 h-[calc(100vh-var(--header-height))] w-[400px] flex-shrink-0 flex-grow-0 overflow-auto border-r p-4">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">Фильтры</h3>
+            <Button size="sm" variant="secondary" onClick={handleResetFilters}>
+              Сбросить
+            </Button>
+          </div>
+          <Separator />
+          <AllFilters
+            filters={actualFilters || {}}
+            onChange={handleFiltersChange}
+            className="w-full"
+          />
+          <Separator />
+          <div className="flex flex-col gap-2">
+            <GetUrlToFilters filters={actualFilters} sort={{}} />
+            <ExportFiltersToCalendar filters={actualFilters} />
+          </div>
         </div>
       </aside>
-      <main className="flex flex-grow flex-col gap-2">
-        <Input
-          className="rounded-md border border-gray-300 px-2 py-1"
-          value={query}
-          onChange={(e) => handleQueryChange(e.target.value)}
-          placeholder="Название, вид спорта, город..."
-        />
-        {loading ? (
-          <div className="flex h-full min-h-[300px] w-full animate-pulse flex-col gap-4">
-            <div className="h-[200px] rounded-md bg-gray-200" />
-            <div className="h-[200px] rounded-md bg-gray-200" />
-            <div className="h-[200px] rounded-md bg-gray-200" />
-            <div className="h-[200px] rounded-md bg-gray-200" />
-            <div className="h-[200px] rounded-md bg-gray-200" />
-            <div className="h-[200px] rounded-md bg-gray-200" />
-          </div>
-        ) : data?.events.length ? (
-          data.events.map((event) => <EventCard key={event.id} event={event} />)
-        ) : (
-          <div className="flex h-[200px] w-full items-center justify-center">
-            Ничего не найдено
-          </div>
-        )}
+
+      <main className="flex-grow gap-2">
+        <div className="sticky top-[var(--header-height)] z-10 border-b bg-white bg-opacity-90 p-4 backdrop-blur">
+          <Input
+            className="rounded-md border border-gray-300 px-2 py-1"
+            value={query}
+            onChange={(e) => handleQueryChange(e.target.value)}
+            placeholder="Название, вид спорта, город..."
+          />
+        </div>
+        <div className="flex flex-col gap-4 p-4">
+          {loading ? (
+            <>
+              <Skeleton className="h-[200px]" />
+              <Skeleton className="h-[200px]" />
+              <Skeleton className="h-[200px]" />
+              <Skeleton className="h-[200px]" />
+              <Skeleton className="h-[200px]" />
+            </>
+          ) : data?.events.length ? (
+            data.events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))
+          ) : (
+            <div className="flex h-[200px] w-full items-center justify-center">
+              Ничего не найдено
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

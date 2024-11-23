@@ -8,6 +8,7 @@ import {
 export const Route = createRootRoute({
   component: () => (
     <div className="flex flex-col">
+      <div className="w-full h-[var(--header-height)]"></div>
       <TopBar />
       <Outlet />
       <ScrollRestoration />

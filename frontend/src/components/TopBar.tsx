@@ -13,18 +13,18 @@ export function TopBar() {
   });
 
   return (
-    <div className="flex h-[--header-height] w-full justify-between border-b-[1px]">
+    <header className="flex h-[--header-height] w-full justify-between border-b-[1px] bg-white bg-opacity-90 backdrop-blur fixed top-0 z-10">
       <div className="flex items-center gap-2 px-2">
         <img src="/favicon.png" className="h-8 w-8" />
         <Button asChild variant="link">
-          <Link to="/" activeProps={{ style: { backgroundColor: "#ddd" } }}>
+          <Link to="/" activeProps={{ className: 'underline'}}>
             Главная
           </Link>
         </Button>
         <Button asChild variant="link">
           <Link
             to="/sports"
-            activeProps={{ style: { backgroundColor: "#ddd" } }}
+            activeProps={{ className: 'underline'}}
           >
             Виды спорта
           </Link>
@@ -32,7 +32,7 @@ export function TopBar() {
         <Button asChild variant="link">
           <Link
             to="/calendar"
-            activeProps={{ style: { backgroundColor: "#ddd" } }}
+            activeProps={{ className: 'underline'}}
           >
             Календарь
           </Link>
@@ -40,7 +40,7 @@ export function TopBar() {
         <Button asChild variant="link">
           <Link
             to="/search"
-            activeProps={{ style: { backgroundColor: "#ddd" } }}
+            activeProps={{ className: 'underline'}}
           >
             Поиск
           </Link>
@@ -52,7 +52,7 @@ export function TopBar() {
           <Button asChild variant="link">
             <Link
               to="/auth/login"
-              activeProps={{ style: { backgroundColor: "#ddd" } }}
+              activeProps={{ className: 'underline'}}
             >
               Войти
             </Link>
@@ -63,7 +63,7 @@ export function TopBar() {
             <Button asChild variant="link">
               <Link
                 to="/profile"
-                activeProps={{ style: { backgroundColor: "#ddd" } }}
+                activeProps={{ className: 'underline'}}
               >
                 Профиль
               </Link>
@@ -74,6 +74,6 @@ export function TopBar() {
           </>
         )}
       </div>
-    </div>
+    </header>
   );
 }
