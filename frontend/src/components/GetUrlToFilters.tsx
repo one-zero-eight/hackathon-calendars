@@ -10,7 +10,7 @@ import {
 import { Filters } from "@/lib/types.ts";
 import { Share2 } from "lucide-react";
 
-export function GetUrlToFilters({ filters }: { filters: Filters }) {
+export function GetUrlToFilters({ filters }: { filters: Filters | undefined }) {
   return (
     <Dialog>
       <DialogTrigger>

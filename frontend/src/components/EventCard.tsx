@@ -1,4 +1,5 @@
 import { $api } from "@/api";
+import { EventExportToCalendarButton } from "@/components/EventExportToCalendarButton.tsx";
 import { EventSubscribeButton } from "@/components/EventSubscribeButton.tsx";
 import { Event } from "@/lib/types";
 import { cn, infoForDateRange, locationText } from "@/lib/utils.ts";
@@ -167,6 +168,7 @@ export function EventCard({ event }: { event: Event }) {
         )}
         <div className="flex flex-wrap gap-2">
           <EventSubscribeButton event={event} />
+          <EventExportToCalendarButton event={event} />
         </div>
       </div>
     </div>
