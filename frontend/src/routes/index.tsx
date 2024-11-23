@@ -9,7 +9,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Temporal } from "temporal-polyfill";
 import { ChevronRight } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -71,12 +70,13 @@ function RouteComponent() {
         <h1 className="mb-4 text-center text-6xl font-medium tracking-tight">
           Единый Календарь Спорта
         </h1>
-        <h2 className="text-center text-2xl opacity-80 flex gap-2 items-center">
-          {eventsTotal == null ? (
-            <Skeleton className="h-8 w-[100px] inline-block" />
-          ) : (
-            <CountUp end={eventsTotal} duration={3.5} separator=" " suffix=" "></CountUp>
-          )}
+        <h2 className="flex items-center gap-2 text-center text-2xl opacity-80">
+          <CountUp
+            end={eventsTotal ?? 1000}
+            duration={eventsTotal == null ? 30 : 3.5}
+            separator=" "
+            suffix=" "
+          ></CountUp>
           <span>спортивных мероприятий из </span>
           <a
             href="https://www.minsport.gov.ru/activity/government-regulation/edinyj-kalendarnyj-plan/"
