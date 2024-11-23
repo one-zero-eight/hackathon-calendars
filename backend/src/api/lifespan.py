@@ -3,16 +3,22 @@ __all__ = ["lifespan"]
 import asyncio
 import json
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 
 from beanie import init_beanie
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import timeout
 from pymongo.errors import ConnectionFailure
+from pywebpush import WebPushException, webpush
 
 from src.config import settings
 from src.logging_ import logger
+from src.modules.notifies.repository import notification_repository
+from src.modules.notifies.scheams import Filter
 from src.storages.mongo import document_models
+
+WAIT_MIN = 2
 
 
 async def setup_database() -> AsyncIOMotorClient:
@@ -39,10 +45,57 @@ async def setup_database() -> AsyncIOMotorClient:
     return motor_client
 
 
+async def push_notification():
+    print("STARTING PUSH_JOB")
+    while True:
+        notifications = await notification_repository.list_all_valid_notifications()
+        for notification in notifications:
+            sent_notification_number = len(notification.event_dates)
+            for start_date in notification.event_dates:
+                days_before = None
+                if (start_date - datetime.now(UTC)).days == 30:
+                    days_before = 30
+                elif (start_date - datetime.now(UTC)).days == 7:
+                    days_before = 7
+                elif (start_date - datetime.now(UTC)).days == 1:
+                    days_before = 1
+                    sent_notification_number -= 1
+                elif (start_date - datetime.now(UTC)).days < 0:
+                    sent_notification_number -= 1
+                if days_before is not None:
+                    outMsg: str
+                    if notification.sport_id is not None:
+                        outMsg = f'«Через {days_before} дней соревнование по виду спорта "{notification.sport_title}"'
+                    elif notification.event_id is not None:
+                        outMsg = f'«Через {days_before} дней соревнование "{notification.event_title}" по виду спорта "{notification.sport_title}"'
+                    try:
+                        webpush(
+                            subscription_info=notification.subscription_info,
+                            data=json.dumps({"title": "Напоминание", "body": outMsg}),
+                            # TODO: add keys
+                            vapid_private_key="KEY",
+                            vapid_claims="KEY",
+                        )
+                        print("Success push")
+                    except WebPushException as ex:
+                        print(f"Failed to send push notification: {ex}")
+            if sent_notification_number == 0:
+                if notification.event_title is not None:
+                    await notification_repository.make_sent_notifications_by_filter(
+                        Filter(event_title=notification.event_title, user_id=notification.user_id)
+                    )
+                elif notification.sport_title is not None:
+                    await notification_repository.make_sent_notifications_by_filter(
+                        Filter(sport_title=notification.sport_title, user_id=notification.user_id)
+                    )
+        asyncio.sleep(WAIT_MIN * 60)
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     # Application startup
     motor_client = await setup_database()
+    asyncio.create_task(push_notification())
     yield
 
     # -- Application shutdown --
