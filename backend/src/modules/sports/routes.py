@@ -35,3 +35,11 @@ async def create_many_sports(sports: list[Sport]) -> bool:
     Create multiple sports.
     """
     return await sports_repository.create_many(sports)
+
+
+@router.post("/update_descriptions", responses={200: {"description": "Update descriptions"}})
+async def update_descriptions(name_x_descriptions: dict[str, str]) -> None:
+    """
+    Update descriptions of sports.
+    """
+    await sports_repository.update_decriptions(name_x_descriptions)

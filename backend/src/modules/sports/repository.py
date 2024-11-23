@@ -15,5 +15,12 @@ class SportsRepository:
         res = await Sport.insert_many(events)
         return res.acknowledged
 
+    async def update_decriptions(self, name_x_descriptions: dict[str, str]):
+        for name, description in name_x_descriptions.items():
+            await Sport.get_motor_collection().update_one(
+                {"sport": name},
+                {"$set": {"description": description}},
+            )
+
 
 sports_repository: SportsRepository = SportsRepository()
