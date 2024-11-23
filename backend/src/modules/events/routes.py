@@ -219,7 +219,7 @@ async def get_selection(selection_id: PydanticObjectId) -> Selection:
 
 
 @router.get(
-    "/search/share/{selection_id}.ics",
+    "/search/share/{selection_id}/.ics",
     response_class=Response,
     responses={
         200: {"description": "Get selection in .ics format"},
