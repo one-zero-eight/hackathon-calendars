@@ -73,6 +73,15 @@ async def search_events(filters: Filters, sort: Sort, pagination: Pagination) ->
     )
 
 
+@router.post("/search/count", responses={200: {"description": "Count events"}})
+async def count_events(filters: Filters) -> int:
+    """
+    Count filtered events.
+    """
+    count = await events_repository.read_with_filters(filters, Sort(), Pagination(page_size=0, page_no=0), count=True)
+    return count
+
+
 class RegionsFilterVariants(BaseModel):
     region: str | None
     "Название региона"

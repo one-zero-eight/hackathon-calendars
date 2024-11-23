@@ -27,7 +27,9 @@ class EventsRepository:
             return False
         return True
 
-    async def read_with_filters(self, filters: Filters, sort: Sort, pagination: Pagination) -> list[Event]:
+    async def read_with_filters(
+        self, filters: Filters, sort: Sort, pagination: Pagination, count: bool = False
+    ) -> list[Event] | int:
         query = Event.all()
 
         # Apply filters
@@ -87,6 +89,9 @@ class EventsRepository:
                 query = query.find(Or(*conditions))
         if filters.query:
             query = query.find({"$text": {"$search": filters.query}})
+
+        if count:
+            return await query.count()
 
         # Apply sorting
         if sort.date:
