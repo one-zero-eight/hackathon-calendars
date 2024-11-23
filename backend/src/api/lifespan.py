@@ -19,8 +19,7 @@ from src.modules.notifies.scheams import Filter
 from src.storages.mongo import document_models
 
 WAIT_MIN = 0.5
-VAPID_PUBLIC_KEY = "BAijnuNwlpKT6Qcl__gPDGhzbCBtb-bYRPbg_vCiI9pLM7CCx1jQYHaoUyd0ulc0or05gJjx8fs-jljvnQi86V8"
-VAPID_PRIVATE_KEY = "P7dbG51eTBjobtrUa7S1tsShoRszG-fIMZ67-zWD75U"
+VAPID_PRIVATE_KEY = "lkjHIc-u8DMZXfJu-PbY-xTitElQuGQcRr-tCvQtN5c"
 
 
 async def setup_database() -> AsyncIOMotorClient:
@@ -75,7 +74,7 @@ async def push_notification():
                             subscription_info=notification.subscription_info,
                             data=json.dumps({"title": "Напоминание", "body": outMsg}),
                             vapid_private_key=VAPID_PRIVATE_KEY,
-                            vapid_claims=VAPID_PUBLIC_KEY,
+                            vapid_claims={"sub": "mailto:albertavkhadeev@gmail.com"},
                         )
                         print(f"Success push for user {notification.user_id}")
                     except WebPushException as ex:
