@@ -28,6 +28,7 @@ services:
     restart: always
     volumes:
       - "mongodb:/data/db"
+      - "./backend/dump:/dump"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-mongoadmin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-secret}

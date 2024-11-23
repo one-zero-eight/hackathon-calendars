@@ -28,3 +28,27 @@
 ![Screenshot0](./img0.png)
 ![Screenshot1](./img1.png)
 ![Screenshot2](./img2.png)
+
+## Инструкция по запуску
+
+1. Установить [Docker](https://docs.docker.com/engine/install/).
+2. Склонировать этот репозиторий.
+   ```
+   git clone https://github.com/hackathonsrus/pp_50040_pfo_ta_onezeroeight_69
+   ```
+3. Перейти в папку с проектом.
+   ```
+   cd pp_50040_pfo_ta_onezeroeight_69
+   ```
+4. Запустить базу данных.
+   ```
+   docker compose up -d db
+   ```
+5. Загрузить дамп базы данных.
+   ```
+   docker compose exec db sh -c 'mongorestore "mongodb://$MONGO_INITDB_ROOT_USERNAME:$MONGO_INITDB_ROOT_PASSWORD@localhost:27017/db?authSource=admin" --drop /dump/db'
+   ```
+6. Запустить проект.
+   ```
+   docker compose up -d
+   ```
