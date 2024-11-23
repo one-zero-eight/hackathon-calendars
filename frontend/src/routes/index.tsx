@@ -1,4 +1,5 @@
 import { $api } from "@/api";
+import { SportBadge } from "@/components/SportBadge";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -99,18 +100,7 @@ function RouteComponent() {
 
       <h2 className="text-center text-2xl">Выбери свой вид спорта</h2>
       <div className="flex flex-wrap justify-center gap-2">
-        {sports?.map((sport) => (
-          <Button
-            key={sport.id}
-            asChild
-            className="flex items-center gap-2 px-4 py-2"
-            variant="outline"
-          >
-            <Link to="/sports/$sportId" params={{ sportId: sport.id }}>
-              {sport.sport}
-            </Link>
-          </Button>
-        ))}
+        {sports?.map((sport) => (<SportBadge key={sport.id} name={sport.sport} id={sport.id} />))}
       </div>
     </div>
   );
