@@ -7,6 +7,7 @@ import {
 import { NotificationsDialog } from "@/components/NotificationsDialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useNavigate } from "@tanstack/react-router";
+import { BellPlus } from "lucide-react";
 import { useState } from "react";
 
 export function EventSubscribeButton({
@@ -39,11 +40,11 @@ export function EventSubscribeButton({
     sendNotification();
     mutate({
       body: {
-        event_title: event.title,
-        notification_options: pushSubscription,
-        target_date: event.start_date,
-        sent: false,
-        user_id: me?.id,
+        notification_options: pushSubscription.toJSON() as any,
+        notification_type: {
+          type: "event",
+          id: event.id,
+        },
       },
     });
   };
@@ -55,6 +56,7 @@ export function EventSubscribeButton({
         variant="secondary"
         onClick={() => subscribe()}
       >
+        <BellPlus />
         Получать уведомления
       </Button>
 

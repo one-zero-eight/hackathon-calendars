@@ -14,7 +14,10 @@ export const Route = createFileRoute("/profile")({
 
 function RouteComponent() {
   const { data: me } = useMe();
-  const { data: notifications } = $api.useMutation("get", "/notify/");
+  const { data: subscriptions } = $api.useMutation(
+    "post",
+    "/notify/my-subscriptions",
+  );
 
   const [notificationPermission, setNotificationPermission] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -76,8 +79,8 @@ function RouteComponent() {
             )}
           </div>
 
-          {notifications?.length ? (
-            notifications?.map((v) => (
+          {subscriptions?.length ? (
+            subscriptions?.map((v) => (
               <div key={v.id} className="flex items-center gap-2">
                 <p>{v.event_title}</p>
                 <p>{v.target_date}</p>

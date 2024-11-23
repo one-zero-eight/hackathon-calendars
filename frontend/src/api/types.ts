@@ -400,6 +400,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/notify/my-subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Get User Subscriptions */
+        post: operations["notifies_get_user_subscriptions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -663,6 +680,44 @@ export interface components {
             /** Max */
             max?: number | null;
         };
+        /** Notification */
+        Notification: {
+            /**
+             * Id
+             * Format: objectid
+             * @description MongoDB document ObjectID
+             * @default None
+             * @example 5eb7cf5a86d9755df3a6c593
+             */
+            id: string;
+            /** Event Title */
+            event_title: string | null;
+            /** Event Id */
+            event_id: string | null;
+            /** Sport Title */
+            sport_title: string | null;
+            /** Sport Id */
+            sport_id: string | null;
+            /** Endpoint */
+            endpoint: string;
+            /** Keys */
+            keys: Record<string, never>;
+            /**
+             * Target Date
+             * Format: date-time
+             */
+            target_date: string;
+            /**
+             * User Id
+             * @example 5eb7cf5a86d9755df3a6c593
+             */
+            user_id: string;
+            /**
+             * Sent
+             * @default false
+             */
+            sent: boolean;
+        };
         /** NotificationCreateReq */
         NotificationCreateReq: {
             /** Notification Type */
@@ -673,11 +728,8 @@ export interface components {
         NotificationOption: {
             /** Endpoint */
             endpoint: string;
-            /**
-             * Expiration Time
-             * Format: date-time
-             */
-            expiration_time: string;
+            /** Expiration Time */
+            expiration_time?: string | null;
             keys: components["schemas"]["Keys"];
         };
         /**
@@ -840,6 +892,7 @@ export type SchemaKeys = components['schemas']['Keys'];
 export type SchemaLocationFilter = components['schemas']['LocationFilter'];
 export type SchemaLocationsFilterVariants = components['schemas']['LocationsFilterVariants'];
 export type SchemaMinMaxFilter = components['schemas']['MinMaxFilter'];
+export type SchemaNotification = components['schemas']['Notification'];
 export type SchemaNotificationCreateReq = components['schemas']['NotificationCreateReq'];
 export type SchemaNotificationOption = components['schemas']['NotificationOption'];
 export type SchemaOrder = components['schemas']['Order'];
@@ -1668,6 +1721,33 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    notifies_get_user_subscriptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Notification"][];
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
