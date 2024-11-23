@@ -114,7 +114,6 @@ export function EventCard({ event }: { event: Event }) {
               href={`https://yandex.ru/maps/?text=${encodeURIComponent(locationText(loc))}`}
               target="_blank"
               rel="noreferrer"
-              key={locationText(loc)}
             >
               <Badge
                 className="flex items-center gap-1 text-xs underline hover:text-blue-700"
