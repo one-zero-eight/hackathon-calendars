@@ -82,7 +82,7 @@ function RouteComponent() {
 
   return (
     <div className="mt-4 flex gap-4 px-4">
-      <aside className="flex w-[400px] flex-shrink-0 flex-grow-0 flex-col gap-4 rounded-sm border p-4">
+      <aside className="flex h-fit w-[400px] flex-shrink-0 flex-grow-0 flex-col gap-4 rounded-sm border p-4">
         <AllFilters
           filters={actualFilters || {}}
           onChange={handleFiltersChange}

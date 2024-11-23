@@ -19,6 +19,9 @@ export function TopBar() {
           <Link to="/">Главная</Link>
         </Button>
         <Button asChild variant="link">
+          <Link to="/sports">Виды спорта</Link>
+        </Button>
+        <Button asChild variant="link">
           <Link to="/calendar">Календарь</Link>
         </Button>
         <Button asChild variant="link">

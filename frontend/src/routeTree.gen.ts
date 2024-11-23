@@ -15,6 +15,7 @@ import { Route as SearchImport } from "./routes/search";
 import { Route as ProfileImport } from "./routes/profile";
 import { Route as CalendarImport } from "./routes/calendar";
 import { Route as IndexImport } from "./routes/index";
+import { Route as SportsIndexImport } from "./routes/sports/index";
 import { Route as SportsSportIdImport } from "./routes/sports/$sportId";
 import { Route as EventsEventIdImport } from "./routes/events/$eventId";
 import { Route as AuthLoginImport } from "./routes/auth/login";
@@ -42,6 +43,12 @@ const CalendarRoute = CalendarImport.update({
 const IndexRoute = IndexImport.update({
   id: "/",
   path: "/",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const SportsIndexRoute = SportsIndexImport.update({
+  id: "/sports/",
+  path: "/sports/",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -116,6 +123,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SportsSportIdImport;
       parentRoute: typeof rootRoute;
     };
+    "/sports/": {
+      id: "/sports/";
+      path: "/sports";
+      fullPath: "/sports";
+      preLoaderRoute: typeof SportsIndexImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
@@ -129,6 +143,7 @@ export interface FileRoutesByFullPath {
   "/auth/login": typeof AuthLoginRoute;
   "/events/$eventId": typeof EventsEventIdRoute;
   "/sports/$sportId": typeof SportsSportIdRoute;
+  "/sports": typeof SportsIndexRoute;
 }
 
 export interface FileRoutesByTo {
@@ -139,6 +154,7 @@ export interface FileRoutesByTo {
   "/auth/login": typeof AuthLoginRoute;
   "/events/$eventId": typeof EventsEventIdRoute;
   "/sports/$sportId": typeof SportsSportIdRoute;
+  "/sports": typeof SportsIndexRoute;
 }
 
 export interface FileRoutesById {
@@ -150,6 +166,7 @@ export interface FileRoutesById {
   "/auth/login": typeof AuthLoginRoute;
   "/events/$eventId": typeof EventsEventIdRoute;
   "/sports/$sportId": typeof SportsSportIdRoute;
+  "/sports/": typeof SportsIndexRoute;
 }
 
 export interface FileRouteTypes {
@@ -161,7 +178,8 @@ export interface FileRouteTypes {
     | "/search"
     | "/auth/login"
     | "/events/$eventId"
-    | "/sports/$sportId";
+    | "/sports/$sportId"
+    | "/sports";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
@@ -170,7 +188,8 @@ export interface FileRouteTypes {
     | "/search"
     | "/auth/login"
     | "/events/$eventId"
-    | "/sports/$sportId";
+    | "/sports/$sportId"
+    | "/sports";
   id:
     | "__root__"
     | "/"
@@ -179,7 +198,8 @@ export interface FileRouteTypes {
     | "/search"
     | "/auth/login"
     | "/events/$eventId"
-    | "/sports/$sportId";
+    | "/sports/$sportId"
+    | "/sports/";
   fileRoutesById: FileRoutesById;
 }
 
@@ -191,6 +211,7 @@ export interface RootRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute;
   EventsEventIdRoute: typeof EventsEventIdRoute;
   SportsSportIdRoute: typeof SportsSportIdRoute;
+  SportsIndexRoute: typeof SportsIndexRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -201,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   EventsEventIdRoute: EventsEventIdRoute,
   SportsSportIdRoute: SportsSportIdRoute,
+  SportsIndexRoute: SportsIndexRoute,
 };
 
 export const routeTree = rootRoute
@@ -219,7 +241,8 @@ export const routeTree = rootRoute
         "/search",
         "/auth/login",
         "/events/$eventId",
-        "/sports/$sportId"
+        "/sports/$sportId",
+        "/sports/"
       ]
     },
     "/": {
@@ -242,6 +265,9 @@ export const routeTree = rootRoute
     },
     "/sports/$sportId": {
       "filePath": "sports/$sportId.tsx"
+    },
+    "/sports/": {
+      "filePath": "sports/index.tsx"
     }
   }
 }
