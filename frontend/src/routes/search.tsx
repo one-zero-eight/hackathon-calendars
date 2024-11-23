@@ -11,25 +11,32 @@ import { useDebounce } from "react-use";
 
 export const Route = createFileRoute("/search")({
   component: RouteComponent,
-  validateSearch: (search): { filters?: Filters } => {
+  validateSearch: (search): { filters?: Filters; share?: string } => {
     return {
       filters: (search.filters as Filters | undefined) || undefined,
+      share: (search.share as string | undefined) || undefined,
     };
   },
 });
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const { filters: routeFilters } = Route.useSearch();
+  const { filters: routeFilters, share } = Route.useSearch();
   const [actualFilters, setActualFilters] = useState<Filters>();
   const [filtersChanging, setFiltersChanging] = useState(false);
   const [debouncedFilters, setDebouncedFilters] = useState<Filters>();
   const [query, setQuery] = useState("");
+  const { data: shareFilters } = $api.useQuery(
+    "get",
+    "/events/search/share/{selection_id}",
+    { params: { path: { selection_id: share ?? "" } } },
+    { enabled: !!share },
+  );
 
   useEffect(() => {
-    setActualFilters(routeFilters);
-    setQuery(routeFilters?.query ?? "");
-  }, [routeFilters]);
+    setActualFilters(shareFilters?.filters ?? routeFilters);
+    setQuery(shareFilters?.filters?.query ?? routeFilters?.query ?? "");
+  }, [routeFilters, shareFilters]);
 
   useDebounce(
     () => {
@@ -82,7 +89,7 @@ function RouteComponent() {
           className="w-full"
         />
         <div className="flex flex-col gap-2">
-          <GetUrlToFilters filters={actualFilters} />
+          <GetUrlToFilters filters={actualFilters} sort={{}} />
           <ExportFiltersToCalendar filters={actualFilters} />
         </div>
       </aside>
