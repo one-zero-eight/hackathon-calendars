@@ -2,6 +2,8 @@ name: Deployment
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'backend/**'
 
@@ -15,7 +17,7 @@ jobs:
 
     - name: Install sshpass
       run: sudo apt-get install -y sshpass
-      
+
     - name: Set up SSH connection
       run: |
         mkdir -p ~/.ssh

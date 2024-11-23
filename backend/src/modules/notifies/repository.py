@@ -34,7 +34,7 @@ class NotificationRepository:
         await query.update({"$set": {"sent": True}})
 
     async def list_all_valid_notifications(self) -> list[Notification]:
-        return await Notification.find(Notification.sent is False).to_list()
+        return await Notification.find(Notification.sent == False).to_list()
 
     async def list_notification_by_filter(self, filter: Filter) -> list[Notification]:
         query = Notification.all()

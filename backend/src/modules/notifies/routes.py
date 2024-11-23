@@ -45,8 +45,7 @@ async def create_notification(notification_create: NotificationCreateReq, auth: 
             user_id=user_id,
             event_id=event.id,
             event_dates=[event.start_date],
-            endpoint=notification_create["notification_options"]["endpoint"],
-            keys=notification_create["notification_options"]["keys"],
+            subscription_info=notification_create["notification_options"],
         )
     else:
         sport = await sports_repository.read_one(str(notification_create["notification_type"]["id"]))
@@ -76,8 +75,7 @@ async def create_notification(notification_create: NotificationCreateReq, auth: 
             event_dates=sorted(map(lambda item: item.start_date, events)),
             user_id=user_id,
             sport_id=sport.id,
-            endpoint=notification_create["notification_options"]["endpoint"],
-            keys=notification_create["notification_options"]["keys"],
+            subscription_info=notification_create["notification_options"],
         )
 
     return await notification_repository.create_notification(notification_to_insert)
