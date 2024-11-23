@@ -23,6 +23,10 @@ router = APIRouter(
 )
 
 
+@router.get("/random-event")
+async def get_random_event() -> Event:
+    return await events_repository.get_random_event()
+
 @router.get("/", responses={200: {"description": "Info about all events"}})
 async def get_all_events() -> list[Event]:
     """
@@ -48,10 +52,6 @@ async def create_many_events(events: list[Event]) -> bool:
     Create multiple events.
     """
     return await events_repository.create_many(events)
-
-@router.get("/random-event")
-async def get_random_event() -> Event:
-    return await events_repository.get_random_event()
 
 class SearchEventsResponse(BaseModel):
     filters: Filters
