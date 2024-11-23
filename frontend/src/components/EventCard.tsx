@@ -35,7 +35,7 @@ const MONTH_NAMES: Record<number, string> = {
   10: "ОКТ",
   11: "НОЯ",
   12: "ДЕК",
-}
+};
 
 const plainDateStr = (d: Temporal.PlainDate) =>
   `${d.day} ${MONTH_NAMES[d.month]}`;
@@ -110,6 +110,7 @@ export function EventCard({ event }: { event: Event }) {
         <div className="flex gap-1">
           {event.location.map((loc, i) => (
             <a
+              key={i}
               href={`https://yandex.ru/maps/?text=${encodeURIComponent(locationText(loc))}`}
               target="_blank"
               rel="noreferrer"
@@ -118,7 +119,6 @@ export function EventCard({ event }: { event: Event }) {
               <Badge
                 className="flex items-center gap-1 text-xs underline hover:text-blue-700"
                 variant="outline"
-                key={i}
               >
                 <MapPin size={18} />
                 <span>{locationText(loc)}</span>
