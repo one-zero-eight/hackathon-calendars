@@ -1,5 +1,6 @@
 __all__ = ["events_repository"]
 
+
 from beanie import PydanticObjectId, SortDirection
 from beanie.odm.operators.find.comparison import GTE, LTE, Eq, In
 from beanie.odm.operators.find.logical import And, Or
@@ -105,6 +106,7 @@ class EventsRepository:
             query = query.sort(
                 ("start_date", SortDirection.ASCENDING if sort.date == "asc" else SortDirection.DESCENDING)
             )
+
         if sort.participant_count:
             query = query.sort(
                 (
@@ -112,6 +114,7 @@ class EventsRepository:
                     SortDirection.ASCENDING if sort.participant_count == "asc" else SortDirection.DESCENDING,
                 )
             )
+
         if sort.age:
             query = query.sort(("age_min", SortDirection.ASCENDING if sort.age == "asc" else SortDirection.DESCENDING))
 

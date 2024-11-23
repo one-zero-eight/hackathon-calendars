@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import icalendar
 from beanie import PydanticObjectId
@@ -72,7 +72,20 @@ async def search_events(filters: Filters, sort: Sort, pagination: Pagination) ->
     """
     Search events.
     """
+    now_ = datetime.now(UTC)
+
+    def key(event: Event):
+        if event.start_date <= now_ <= event.end_date:
+            return 0
+        if event.start_date > now_:
+            return 1
+        return 2
+
     events = await events_repository.read_with_filters(filters, sort, pagination)
+    if not sort.date:
+        # sort default: current events, future events, past events
+        events = sorted(events, key=key)
+
     return SearchEventsResponse(
         filters=filters,
         sort=sort,
