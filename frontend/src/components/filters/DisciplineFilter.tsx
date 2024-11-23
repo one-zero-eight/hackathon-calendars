@@ -57,6 +57,10 @@ export function DisciplineFilter(
     setQ("");
   }, [pendingSport]);
 
+  useEffect(() => {
+    if (!open) setQ("");
+  }, [open]);
+
   const pendingDisciplines = pendingSport
     ? disciplinesBySport.get(pendingSport)
     : null;
@@ -118,6 +122,7 @@ export function DisciplineFilter(
       setPendingSport(null);
       return;
     }
+
     setOpen(newOpen);
   };
 

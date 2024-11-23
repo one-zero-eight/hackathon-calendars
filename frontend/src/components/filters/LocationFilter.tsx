@@ -16,7 +16,7 @@ import { FilterBaseProps } from "./common";
 import { $api } from "@/api";
 import { BaseFilter } from "./BaseFilter";
 import { Filters } from "@/lib/types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Badge } from "../ui/badge";
 import { useDebounce } from "react-use";
 import { cn } from "@/lib/utils";
@@ -106,6 +106,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
     return flat;
   }, [data]);
 
+  const [open, setOpen] = useState(false)
   const [q, setQ] = useState("");
   const [qDeb, setQDeb] = useState("");
   useDebounce(
@@ -115,6 +116,13 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
     500,
     [q, setQDeb],
   );
+
+  useEffect(() => {
+    if (!open) {
+      setQ('')
+      setQDeb('')
+    }
+  }, [open])
 
   const filtered = useMemo(
     () =>
@@ -138,7 +146,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
 
   return (
     <BaseFilter {...rest}>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             disabled={disabled}
