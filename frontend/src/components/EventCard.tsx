@@ -59,7 +59,7 @@ export function EventCard({ event }: { event: Event }) {
   const age = ageText(event.age_min, event.age_max);
 
   return (
-    <div className="flex overflow-hidden rounded-lg border">
+    <div className="flex overflow-hidden rounded-lg border bg-white shadow-sm">
       <div
         className={cn(
           "flex w-[175px] flex-shrink-0 flex-grow-0 flex-col items-center justify-center text-white",

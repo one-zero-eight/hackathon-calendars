@@ -149,14 +149,14 @@ function RouteComponent() {
             placeholder="Название, вид спорта, город..."
           />
         </div>
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4 bg-stone-100 p-4">
           {loading ? (
             <>
-              <Skeleton className="h-[200px]" />
-              <Skeleton className="h-[200px]" />
-              <Skeleton className="h-[200px]" />
-              <Skeleton className="h-[200px]" />
-              <Skeleton className="h-[200px]" />
+              <Skeleton className="h-[200px] bg-stone-200" />
+              <Skeleton className="h-[200px] bg-stone-200" />
+              <Skeleton className="h-[200px] bg-stone-200" />
+              <Skeleton className="h-[200px] bg-stone-200" />
+              <Skeleton className="h-[200px] bg-stone-200" />
             </>
           ) : data?.events.length ? (
             data.events.map((event) => (
