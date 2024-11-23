@@ -2,40 +2,27 @@ name: Deployment
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'backend/**'
 
 jobs:
   deploy:
+    if: github.repository_owner == 'one-zero-eight' # Do not run in forks
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-        
-    - name: Set up SSH
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y sshpass
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Docker Compose Build
+    - name: Install sshpass
+      run: sudo apt-get install -y sshpass
+      
+    - name: Set up SSH connection
       run: |
-        docker compose build
-        
-    - name: Save Docker images to tar file
-      run: docker save -o images.tar $(docker images --format "{{.Repository}}:{{.Tag}}" | tr '\n' ' ')
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-    - name: Compress the tarball
+    - name: Deploy to server
       run: |
-        gzip images.tar
-
-    - name: Send compressed tarball over SSH
-      run: |
-        sshpass -v -p "${{ secrets.SSH_PASSWORD }}" scp images.tar.gz ${{ secrets.SERVER_USER }}@${{ env.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
-
-    - name: Load Docker images on the remote server
-      run: |
-        sshpass -v -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && gunzip -c myapp_images.tar.gz | docker load && docker compose down && docker compose up -d"
+        sshpass -v -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && ./deploy.sh"
