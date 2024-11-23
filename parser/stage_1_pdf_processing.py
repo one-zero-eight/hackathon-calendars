@@ -363,16 +363,15 @@ def debug_draw(pdf_path, df):
             # )
             # Draw each cell in the table
             for cell in table.cells:
-                cell_bbox = cell.bbox
                 writer.add_annotation(
                     page_number=page_number - 1,
                     annotation=annotations.FreeText(
                         text="",
                         rect=(
-                            cell_bbox[0],
-                            H - cell_bbox[3],
-                            cell_bbox[2],
-                            H - cell_bbox[1],
+                            cell[0],
+                            H - cell[3],
+                            cell[2],
+                            H - cell[1],
                         ),
                         border_color=colors[table_data["sport"] % len(colors)],
                         background_color=None,

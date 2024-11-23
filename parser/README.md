@@ -1,116 +1,121 @@
-Here’s a `README.md` file for the two scripts:
+# Обработка PDF для получения событий
+
+Этот проект состоит из трёх этапов:
+
+1. **Извлечение и парсинг данных о событиях из PDF-документа.**
+2. **Трансформация и экспорт структурированных данных о событиях в формате JSON.**
+3. **Оценка точности извлечения таблиц (TEA)**
+
+Скрипты предназначены для обработки PDF-файлов, содержащих данные о событиях (например, спортивных), извлечения таблиц и
+атрибутов, формирования финальных данных в формате JSON и оценки качества извлечения таблиц.
+
+> [!IMPORTANT]
+> Точность извлечения таблиц (TEA): 99.34%
+> Обработано 2500 страниц за 6 минут
+> Извлечена информация о 14000 событиях в 152 видов спорта
 
 ---
 
-# PDF to Events Processor
+## Этап 1: Обработка PDF
 
-This project consists of two stages:
+### Описание
 
-1. **Extracting and parsing event data from a PDF document.**
-2. **Transforming and exporting structured event data into JSON format.**
+Скрипт `stage_1_pdf_processing.py` извлекает таблицы и метки из PDF-файла. Он определяет секции, такие как названия
+мероприятий и количество участников, и парсит таблицы, используя информацию о координатах.
 
-The scripts are designed to process PDF files containing event-related data (such as sports events), extract tables and attributes, and output the final data in a JSON format suitable for further use.
+**### Возможности**
 
----
+- **Якоря**: Определяет ключевые метки и секции текста, такие как "Наименование", "Основной состав" и "Молодежный (
+  резервный) состав".
+- **Извлечение таблиц**: Получает табличные данные, связанные с деталями событий.
+- **Режим отладки**: Аннотирует и визуализирует координаты и извлеченные таблицы для отладки.
+- **Форматы вывода**:
+    - CSV: `label_locations.csv` и `postprocessed_label_locations.csv`.
+    - PDF: Отладочный выходной файл с аннотациями (`debugged_output.pdf`).
 
-## Stage 1: PDF Processing
+### Использование
 
-### Description
-
-The script `stage_1_pdf_processing.py` extracts tables and labels from a PDF file. It identifies sections, such as event names and participant counts, and parses the tables using bounding box information.
-
-**### Features**
-
-- **Anchoring**: Identifies key labels and text sections like "Наименование", "Основной состав", and "Молодежный (резервный) состав".
-- **Table Extraction**: Extracts tabular data related to event details.
-- **Debug Mode**: Annotates and visualizes bounding boxes and extracted tables for debugging.
-- **Output Formats**:
-  - CSV: `label_locations.csv` and `postprocessed_label_locations.csv`.
-  - PDF: Annotated debug output (`debugged_output.pdf`).
-
-### Usage
-
-1. Download the PDF file from the [link](https://storage.minsport.gov.ru/cms-uploads/cms/II_chast_EKP_2024_14_11_24_65c6deea36.pdf),
-   it is from the [Ministry of Sports of the Russian Federation](https://minsport.gov.ru/).
-2. Install the required dependencies:
+1. Загрузите PDF-файл
+   по [ссылке](https://storage.minsport.gov.ru/cms-uploads/cms/II_chast_EKP_2024_14_11_24_65c6deea36.pdf).
+   Он взят с [сайта Министерства спорта Российской Федерации](https://minsport.gov.ru/).
+2. Установите необходимые зависимости:
    ```bash
    pip install pandas pdfplumber pypdf tqdm
    ```
-3. Run the script:
+3. Запустите скрипт в режиме отладки:
    ```bash
-   python stage_1_pdf_processing.py <path_to_pdf> --debug
+   python stage_1_pdf_processing.py <путь_к_PDF> --debug
    ```
 
-4. Outputs:
-   - Intermediate CSV files with label and table data.
-   - `events.csv` with extracted table details.
-   - Debug annotations (if `--debug` is used).
+4. Результаты:
+    - Промежуточные CSV-файлы с данными о метках и таблицах.
+    - `events.csv` с извлечёнными данными таблиц.
+    - Отладочный файл `debugged_output.pdf` для ручной проверки таблиц.
 
 ---
 
-## Stage 2: JSON Export
+## Этап 2: Экспорт в JSON
 
-### Description
+### Описание
 
-The script `stage_2_extract_attributes.py` processes the extracted event data (`events.csv`) into a JSON format.
-It validates and enriches the data, such as:
-- Parsing and converting date ranges.
-- Cleaning and formatting participant counts and locations.
-- Extracting structured attributes like age ranges, gender, and disciplines using prior knowledge.
+Скрипт `stage_2_extract_attributes.py` преобразует извлечённые данные о событиях (`events.csv`) в формат JSON.
+Он выполняет проверку и обогащение данных, включая:
 
-### Features
+- Парсинг и преобразование диапазонов дат.
+- Очистку и форматирование количества участников и мест проведения.
+- Извлечение структурированных атрибутов, таких как возрастные группы, пол и дисциплины, с использованием заранее
+  заданных правил.
 
-- **Data Validation**:
-  - Ensures unique indices in the CSV file.
-  - Validates and converts date ranges.
-- **Data Cleaning**:
-  - Removes unwanted text like "ПО НАЗНАЧЕНИЮ".
-  - Strips excess whitespace.
-- **Attribute Extraction**:
-  - Uses helper functions to map descriptions and locations (`parse_description` and `parse_location`).
-- **JSON Output**:
-  - Produces a structured `events.json` file with all parsed details.
+### Использование
 
-### Usage
-
-1. Install the required dependencies:
+1. Установите необходимые зависимости:
    ```bash
    pip install pandas
    ```
 
-2. Run the script:
+2. Запустите скрипт:
    ```bash
    python stage_2_extract_attributes.py
    ```
 
-3. Outputs:
-   - `events.json`: A JSON file containing structured event data.
+3. Результаты:
+    - `events.json`: JSON-файл со структурированными данными о событиях.
 
 ---
 
-## JSON Output Format
+## Этап 3: Метрики
 
-Each event in the `events.json` file is represented as follows:
+### Описание
 
-```json
-{
-    "ekp_id": "<unique_identifier>",
-    "title": "<event_title>",
-    "description": "<event_description>",
-    "gender": "<gender>",
-    "age_min": "<minimum_age>",
-    "age_max": "<maximum_age>",
-    "sport": "<sport>",
-    "discipline": ["<discipline_1>", "<discipline_2>"],
-    "start_date": "YYYY-MM-DD",
-    "end_date": "YYYY-MM-DD",
-    "location": [
-        {
-            "country": "<country>",
-            "region": "<region>",
-            "city": "<city>"
-        }
-    ],
-    "participant_count": 108
-}
-```
+Скрипт `stage_3_eval.py` рассчитывает метрику точности извлечения таблиц (TEA). Она показывает процент корректно
+извлечённых таблиц относительно общего количества таблиц, определённых вручную.
+
+**### Возможности**
+
+- Подсчёт общего количества таблиц в отладочном файле `debugged_output.pdf`.
+- Подсчёт корректно извлечённых таблиц путём сравнения данных.
+- Проверка корректности вводимых данных.
+- Расчёт TEA в процентах.
+
+### Использование
+
+1. Запустите скрипт:
+   ```bash
+   python stage_3_eval.py
+   ```
+
+2. Введите следующие данные:
+    - Общее количество таблиц (для каждого вида спорта должно быть по одной таблице): 152.
+    - Количество таблиц, корректно извлечённых алгоритмом.
+
+3. Скрипт проверит ввод и рассчитает TEA:
+   ```
+   Точность извлечения таблиц (TEA): <значение>%.
+   ```
+
+---
+
+### Заметки по этапу 3:
+
+Для выполнения этого этапа необходимо вручную подсчитать общее количество таблиц и количество корректно извлечённых
+таблиц на основе аннотаций в `debugged_output.pdf`.
