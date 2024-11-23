@@ -3,7 +3,6 @@ __all__ = ["lifespan"]
 import asyncio
 import json
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime
 
 from beanie import init_beanie
 from fastapi import FastAPI
@@ -53,16 +52,16 @@ async def push_notification():
         for notification in notifications:
             sent_notification_number = len(notification.event_dates)
             for start_date in notification.event_dates:
-                days_before = None
-                if (start_date - datetime.now(UTC)).days == 30:
-                    days_before = 30
-                elif (start_date - datetime.now(UTC)).days == 7:
-                    days_before = 7
-                elif (start_date - datetime.now(UTC)).days == 1:
-                    days_before = 1
-                    sent_notification_number -= 1
-                elif (start_date - datetime.now(UTC)).days < 0:
-                    sent_notification_number -= 1
+                days_before = 4
+                # if (start_date - datetime.now(UTC)).days == 30:
+                #     days_before = 30
+                # elif (start_date - datetime.now(UTC)).days == 7:
+                #     days_before = 7
+                # elif (start_date - datetime.now(UTC)).days == 1:
+                #     days_before = 1
+                #     sent_notification_number -= 1
+                # elif (start_date - datetime.now(UTC)).days < 0:
+                #     sent_notification_number -= 1
                 if days_before is not None:
                     outMsg: str
                     if notification.sport_id is not None:
@@ -72,7 +71,7 @@ async def push_notification():
                     try:
                         webpush(
                             subscription_info=notification.subscription_info,
-                            data=json.dumps({"title": "Напоминание", "body": outMsg}),
+                            data=json.dumps({"message": outMsg}),
                             vapid_private_key=VAPID_PRIVATE_KEY,
                             vapid_claims={"sub": "mailto:albertavkhadeev@gmail.com"},
                         )
