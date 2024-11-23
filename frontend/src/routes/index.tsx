@@ -1,7 +1,10 @@
 import { $api } from "@/api";
+import { EventCard } from "@/components/EventCard";
 import { SportBadge } from "@/components/SportBadge";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Filters, Sort } from "@/lib/types";
 import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowDown, ChevronRight } from "lucide-react";
@@ -147,7 +150,7 @@ function RouteComponent() {
         <ArrowDown />
       </Button>
 
-      <section className="py-4">
+      <section className="my-[64px]">
         <h2 className="text-center text-2xl font-medium">
           Выбери свой вид спорта
         </h2>
@@ -192,6 +195,71 @@ function RouteComponent() {
           </Button>
         </div>
       </section>
+
+      <EventSelection
+        title="Текущие события"
+        sort={{ date: "asc" }}
+        filters={{
+          date: plainDatesForFilter(Temporal.Now.plainDateISO(), null),
+        }}
+        shuffle
+      />
+
+      <EventSelection
+        title="Самые крупные события 2024"
+        sort={{ participant_count: "desc" }}
+        filters={{
+          date: plainDatesForFilter(
+            Temporal.PlainDate.from("2024-01-01"),
+            Temporal.PlainDate.from("2024-12-31"),
+          ),
+        }}
+        shuffle
+      />
     </main>
+  );
+}
+
+function EventSelection({
+  title,
+  filters,
+  sort,
+  shuffle = false,
+}: {
+  title: string;
+  filters: Filters;
+  sort: Sort;
+  shuffle?: boolean;
+}) {
+  const { data } = $api.useQuery("post", "/events/search", {
+    body: {
+      filters,
+      sort,
+      pagination: {
+        page_no: 1,
+        page_size: 15,
+      },
+    },
+  });
+
+  const events = useMemo(() => {
+    if (!data?.events) return [];
+    return shuffle
+      ? data.events.slice().sort(() => Math.random() - 0.5)
+      : data.events;
+  }, [data]);
+
+  return (
+    <section className="my-[64px] w-full">
+      <h2 className="mb-6 text-center text-2xl font-medium">{title}</h2>
+      <ScrollArea className="w-full">
+        <div className="flex gap-4 px-4">
+          {events.map((event) => (
+            <EventCard key={event.id} event={event} className="w-[900px]" />
+          ))}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </section>
   );
 }

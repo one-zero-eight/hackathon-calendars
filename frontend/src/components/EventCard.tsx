@@ -40,7 +40,13 @@ const MONTH_NAMES: Record<number, string> = {
 const plainDateStr = (d: Temporal.PlainDate) =>
   `${d.day} ${MONTH_NAMES[d.month]}`;
 
-export function EventCard({ event }: { event: Event }) {
+export function EventCard({
+  event,
+  className,
+}: {
+  event: Event;
+  className?: string;
+}) {
   const { data: sports } = $api.useQuery("get", "/sports/");
 
   const sportId = sports?.find((s) => s.sport === event.sport)?.id;
@@ -59,7 +65,12 @@ export function EventCard({ event }: { event: Event }) {
   const age = ageText(event.age_min, event.age_max);
 
   return (
-    <div className="flex overflow-hidden rounded-lg border bg-white shadow-sm">
+    <div
+      className={cn(
+        "flex overflow-hidden rounded-lg border bg-white shadow-sm",
+        className,
+      )}
+    >
       <div
         className={cn(
           "flex w-[175px] flex-shrink-0 flex-grow-0 flex-col items-center justify-center text-white",
@@ -107,7 +118,7 @@ export function EventCard({ event }: { event: Event }) {
           </Button>
         </div>
         <h4 className="text-xl font-bold">{event.title}</h4>
-        <div className="flex gap-1 flex-wrap">
+        <div className="flex flex-wrap gap-1">
           {event.location.map((loc, i) => (
             <a
               key={i}
