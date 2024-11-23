@@ -23,9 +23,27 @@ export async function receivePushSubscription() {
   }
 
   const existing = await registration.pushManager.getSubscription();
+  console.log("existing", JSON.stringify(existing));
   if (existing) {
-    console.log("existing", JSON.stringify(existing));
-    return existing;
+    // Check if the existing subscription is the same as the current one
+    const applicationServerKey = btoa(
+      String.fromCharCode.apply(
+        null,
+        // @ts-ignore
+        new Uint8Array(existing.options.applicationServerKey),
+      ),
+    );
+    const currentKey = applicationServerKey
+      .replace("+", "-")
+      .replace("/", "_")
+      .replace("=", "");
+
+    if (currentKey.indexOf(import.meta.env.VITE_NOTIFY_PUBLIC_KEY) > -1) {
+      return existing;
+    } else {
+      console.log("existing.unsubscribe");
+      await existing.unsubscribe();
+    }
   }
 
   const pushSubscription = await registration.pushManager.subscribe({
