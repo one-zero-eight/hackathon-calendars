@@ -4,15 +4,8 @@ import {
   receivePushSubscription,
   sendNotification,
 } from "@/api/notifications.ts";
+import { NotificationsDialog } from "@/components/NotificationsDialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog.tsx";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -65,31 +58,11 @@ export function EventSubscribeButton({
         Получать уведомления
       </Button>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Нет разрешения на уведомления</DialogTitle>
-            <DialogDescription>
-              Похоже, что вы не разрешили сайту отправлять вам уведомления.
-              Пожалуйста, разрешите уведомления в настройках браузера и
-              попробуйте снова.
-            </DialogDescription>
-            <a
-              href="https://yandex.ru/support/common/ru/browsers-settings/notifications"
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-blue-500 underline"
-            >
-              Инструкция для разных браузеров
-            </a>
-          </DialogHeader>
-          <DialogFooter className="sm:justify-start">
-            <Button type="button" variant="default" onClick={() => subscribe()}>
-              Проверить
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <NotificationsDialog
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        retry={() => subscribe()}
+      />
     </>
   );
 }

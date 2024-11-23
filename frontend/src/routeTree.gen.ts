@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from "./routes/__root";
 import { Route as SearchImport } from "./routes/search";
+import { Route as ProfileImport } from "./routes/profile";
 import { Route as IndexImport } from "./routes/index";
 import { Route as SportsSportIdImport } from "./routes/sports/$sportId";
 import { Route as EventsEventIdImport } from "./routes/events/$eventId";
@@ -22,6 +23,12 @@ import { Route as AuthLoginImport } from "./routes/auth/login";
 const SearchRoute = SearchImport.update({
   id: "/search",
   path: "/search",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const ProfileRoute = ProfileImport.update({
+  id: "/profile",
+  path: "/profile",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -60,6 +67,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
+    "/profile": {
+      id: "/profile";
+      path: "/profile";
+      fullPath: "/profile";
+      preLoaderRoute: typeof ProfileImport;
+      parentRoute: typeof rootRoute;
+    };
     "/search": {
       id: "/search";
       path: "/search";
@@ -95,6 +109,7 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
+  "/profile": typeof ProfileRoute;
   "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
   "/events/$eventId": typeof EventsEventIdRoute;
@@ -103,6 +118,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/profile": typeof ProfileRoute;
   "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
   "/events/$eventId": typeof EventsEventIdRoute;
@@ -112,6 +128,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/": typeof IndexRoute;
+  "/profile": typeof ProfileRoute;
   "/search": typeof SearchRoute;
   "/auth/login": typeof AuthLoginRoute;
   "/events/$eventId": typeof EventsEventIdRoute;
@@ -122,15 +139,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | "/"
+    | "/profile"
     | "/search"
     | "/auth/login"
     | "/events/$eventId"
     | "/sports/$sportId";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/search" | "/auth/login" | "/events/$eventId" | "/sports/$sportId";
+  to:
+    | "/"
+    | "/profile"
+    | "/search"
+    | "/auth/login"
+    | "/events/$eventId"
+    | "/sports/$sportId";
   id:
     | "__root__"
     | "/"
+    | "/profile"
     | "/search"
     | "/auth/login"
     | "/events/$eventId"
@@ -140,6 +165,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  ProfileRoute: typeof ProfileRoute;
   SearchRoute: typeof SearchRoute;
   AuthLoginRoute: typeof AuthLoginRoute;
   EventsEventIdRoute: typeof EventsEventIdRoute;
@@ -148,6 +174,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
   AuthLoginRoute: AuthLoginRoute,
   EventsEventIdRoute: EventsEventIdRoute,
@@ -165,6 +192,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/profile",
         "/search",
         "/auth/login",
         "/events/$eventId",
@@ -173,6 +201,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/profile": {
+      "filePath": "profile.tsx"
     },
     "/search": {
       "filePath": "search.tsx"

@@ -1,4 +1,6 @@
-export async function sendNotification() {
+export async function sendNotification(
+  message: string = "Теперь вы будете получать уведомления об интересующих вас мероприятиях",
+) {
   const registration = await navigator.serviceWorker.register("/sw.js");
   const permissionResult = await Notification.requestPermission();
 
@@ -7,7 +9,7 @@ export async function sendNotification() {
   }
 
   await registration.showNotification("Спортивные мероприятия", {
-    body: "Теперь вы будете получать уведомления об интересующих вас мероприятиях",
+    body: message,
   });
   return true;
 }
