@@ -1,10 +1,11 @@
 import { $api } from "@/api";
 import { EventExportToCalendarButton } from "@/components/EventExportToCalendarButton.tsx";
 import { EventSubscribeButton } from "@/components/EventSubscribeButton.tsx";
+import { Button } from "@/components/ui/button.tsx";
 import { Event } from "@/lib/types";
 import { cn, infoForDateRange, locationText } from "@/lib/utils.ts";
 import { Link } from "@tanstack/react-router";
-import { MapPin, Users } from "lucide-react";
+import { Link2, MapPin, Users } from "lucide-react";
 import { ImMan, ImWoman } from "react-icons/im";
 import { Temporal } from "temporal-polyfill";
 import { Badge } from "./ui/badge";
@@ -173,6 +174,20 @@ export function EventCard({ event }: { event: Event }) {
         <div className="flex flex-wrap gap-2">
           <EventSubscribeButton event={event} />
           <EventExportToCalendarButton event={event} />
+          <Button
+            asChild
+            className="h-7 w-fit rounded-md px-2"
+            variant="secondary"
+          >
+            <a
+              href={
+                "https://storage.minsport.gov.ru/cms-uploads/cms/II_chast_EKP_2024_14_11_24_65c6deea36.pdf#page=1"
+              }
+            >
+              <Link2 />
+              ЕКП
+            </a>
+          </Button>
         </div>
       </div>
     </div>
