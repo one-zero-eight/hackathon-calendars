@@ -4,8 +4,8 @@ import { sendNotification } from "@/api/notifications.ts";
 import { NotificationsDialog } from "@/components/NotificationsDialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Card } from "@/components/ui/card.tsx";
-import { createFileRoute } from "@tanstack/react-router";
-import { Check, CircleX } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Calendar, Check, CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/profile")({
@@ -14,10 +14,11 @@ export const Route = createFileRoute("/profile")({
 
 function RouteComponent() {
   const { data: me } = useMe();
-  const { data: subscriptions } = $api.useMutation(
+  const { data: subscriptions } = $api.useQuery(
     "post",
     "/notify/my-subscriptions",
   );
+  const { data: sports } = $api.useQuery("get", "/sports/");
 
   const [notificationPermission, setNotificationPermission] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -46,7 +47,7 @@ function RouteComponent() {
 
       <Card className="flex w-full flex-col gap-2 p-4">
         <div>
-          <h2 className="mb-2 text-lg font-semibold">Уведомления</h2>
+          <h2 className="mb-2 text-2xl font-semibold">Уведомления</h2>
           <div className="flex items-center gap-2">
             <p>Разрешение:</p>
             {notificationPermission ? (
@@ -79,16 +80,55 @@ function RouteComponent() {
             )}
           </div>
 
-          {subscriptions?.length ? (
-            subscriptions?.map((v) => (
-              <div key={v.id} className="flex items-center gap-2">
-                <p>{v.event_title}</p>
-                <p>{v.target_date}</p>
-              </div>
-            ))
-          ) : (
-            <div className="text-gray-500">Нет настроенных уведомлений</div>
-          )}
+          <h2 className="mt-2 text-lg font-semibold">Ближайшие уведомления:</h2>
+          <div className="flex flex-col gap-2">
+            {subscriptions?.length ? (
+              subscriptions?.map((v) => (
+                <Card
+                  key={v.id}
+                  className="flex max-w-2xl items-center gap-4 p-2"
+                >
+                  <div className="flex flex-col items-center gap-2 text-xl font-medium">
+                    <Calendar />
+                    <div className="flex flex-col">
+                      {v.event_dates.slice(0, 3).map((d) => (
+                        <div>{new Date(d).toLocaleDateString("ru-RU")}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    {v.sport_id ? (
+                      <Link
+                        to="/sports/$sportId"
+                        params={{ sportId: v.sport_id ?? "" }}
+                        className="text-xl"
+                      >
+                        {v.sport_title}
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          to="/sports/$sportId"
+                          params={{
+                            sportId:
+                              sports?.find((s) => s.sport === v.sport_title)
+                                ?.id ?? "",
+                          }}
+                          className="text-gray-500 underline"
+                        >
+                          {v.sport_title}
+                        </Link>
+                        <div className="text-xl">{v.event_title}</div>
+                      </>
+                    )}
+                  </div>
+                </Card>
+              ))
+            ) : (
+              <div className="text-gray-500">Нет настроенных уведомлений</div>
+            )}
+          </div>
         </div>
       </Card>
     </div>

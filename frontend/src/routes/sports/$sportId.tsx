@@ -1,10 +1,7 @@
 import { $api } from "@/api";
 import { ExportSportToCalendar } from "@/components/ExportSportToCalendar.tsx";
+import { SportSubscribeButton } from "@/components/SportSubscribeButton.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { cn } from "@/lib/utils.ts";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import SportSVG from "./sport.svg";
-import { Separator } from "@/components/ui/separator";
 import {
   Command,
   CommandGroup,
@@ -17,8 +14,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronsUpDown } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils.ts";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ChevronsUpDown } from "lucide-react";
+import SportSVG from "./sport.svg";
 
 export const Route = createFileRoute("/sports/$sportId")({
   component: RouteComponent,
@@ -128,7 +129,10 @@ function RouteComponent() {
             </Popover>
           )}
 
-          <ExportSportToCalendar sportId={sportId} className="ml-auto w-fit" />
+          <div className="ml-auto flex flex-wrap gap-2">
+            <SportSubscribeButton sportId={sportId} />
+            <ExportSportToCalendar sportId={sportId} className="w-fit" />
+          </div>
         </div>
       </div>
     </div>

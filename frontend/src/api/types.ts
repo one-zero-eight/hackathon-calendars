@@ -712,11 +712,8 @@ export interface components {
             endpoint: string;
             /** Keys */
             keys: Record<string, never>;
-            /**
-             * Target Date
-             * Format: date-time
-             */
-            target_date: string;
+            /** Event Dates */
+            event_dates: string[];
             /**
              * User Id
              * @example 5eb7cf5a86d9755df3a6c593
@@ -738,8 +735,6 @@ export interface components {
         NotificationOption: {
             /** Endpoint */
             endpoint: string;
-            /** Expiration Time */
-            expiration_time?: string | null;
             keys: components["schemas"]["Keys"];
         };
         /**
