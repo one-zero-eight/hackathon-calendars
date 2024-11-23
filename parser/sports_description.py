@@ -56,5 +56,21 @@ for sport_obj in sports:
     if sport in sports_desc:
         sport_obj["description"] = sports_desc[sport]
 
+postprocessed_label_locations = pd.read_csv(
+    "postprocessed_label_locations.csv", index_col=None
+)
+sport_x_page = {}
+for _, row in postprocessed_label_locations.iterrows():
+    sport_x_page[row["name_text"].upper()] = row["name_page"] + 1
+
+
+# also add name_page to sports.json
+for sport_obj in sports:
+    sport = sport_obj["sport"]
+    if sport.upper() in sport_x_page:
+        sport_obj["page"] = sport_x_page[sport.upper()]
+    else:
+        print(f"Missing name_page for {sport}")
+
 with open("sports.json", "w") as f:
     json.dump(sports, f, ensure_ascii=False, indent=2)

@@ -61,6 +61,7 @@ if __name__ == "__main__":
                 "end_date": row["Конец"].strftime("%Y-%m-%d"),
                 "location": [loc.model_dump() for loc in _location_mapping],
                 "participant_count": row["Количество участников"],
+                "page": row["Страница"],
             }
         )
 

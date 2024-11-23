@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 import pdfplumber
+from pdfplumber.table import TableSettings
 from pdfplumber.page import Page
 from pypdf import PdfReader, PdfWriter, annotations
 from tqdm import tqdm
@@ -266,27 +267,35 @@ def extract_tables(pdf, df):
             if page.height < 5:
                 print(f"page crop {page_number} for {row['name_text']} is too small")
                 continue
-            table = page.extract_table(table_settings=params)
+
+            table = page.find_table(table_settings=params)
+
             if table:
-                tables[i].append(table)
-            if DEBUG:
-                # add rectangles to debug_tables
-                table = page.find_table(table_settings=params)
-                if table:
+                tset = TableSettings.resolve(params)
+                texts = table.extract(**(tset.text_settings or {}))
+                tables[i].append((texts, page_number + 1))
+
+                if DEBUG:
                     debug_tables[page.page_number].append({"table": table, "sport": i})
-                #
-                # page.to_image().debug_tablefinder(params).save(
-                #     f"images/debug_{i}_{page_number}.png"
-                # )
 
     # convert to dfs
     as_dfs = {}  # df_index: df
     for i, table_list in tables.items():
         _ = []
-        for t in table_list:
-            _.extend(t)
+        for t, page in table_list:
+            for r in t:
+                _.append(r + [page])
+
         as_dfs[i] = pd.DataFrame(
-            _, columns=["№", "Наименование", "Сроки", "Место", "Количество участников"]
+            _,
+            columns=[
+                "№",
+                "Наименование",
+                "Сроки",
+                "Место",
+                "Количество участников",
+                "Страница",
+            ],
         )
         # set "№" as index
         as_dfs[i].set_index("№", inplace=True)
@@ -398,9 +407,9 @@ if __name__ == "__main__":
 
     pdf = pdfplumber.open(pdf_path)
 
-    results_df = pd.DataFrame(anchoring(pdf))
-    print(results_df.head())
-    results_df.to_csv("label_locations.csv", index=False, float_format="%.2f")
+    # results_df = pd.DataFrame(anchoring(pdf))
+    # print(results_df.head())
+    # results_df.to_csv("label_locations.csv", index=False, float_format="%.2f")
     results_df = pd.read_csv("label_locations.csv")
     postprocessed_df = postprocess(results_df)
     print(postprocessed_df.head())
@@ -425,5 +434,12 @@ if __name__ == "__main__":
     pd.concat(df_x_data.values()).to_csv(
         "events.csv",
         index=True,
-        columns=["Спорт", "Наименование", "Сроки", "Место", "Количество участников"],
+        columns=[
+            "Спорт",
+            "Наименование",
+            "Сроки",
+            "Место",
+            "Количество участников",
+            "Страница",
+        ],
     )
