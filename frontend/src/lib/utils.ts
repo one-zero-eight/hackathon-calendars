@@ -19,8 +19,8 @@ export const infoForDateRange = (
   a: Temporal.PlainDate | string,
   b: Temporal.PlainDate | string,
 ): {
-  start: Temporal.PlainDate,
-  end: Temporal.PlainDate,
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
   daysTillStart: number;
   daysTillEnd: number;
   time: "past" | "present" | "future";
@@ -28,8 +28,10 @@ export const infoForDateRange = (
 } => {
   const today = Temporal.Now.plainDateISO();
   try {
-    const start = a instanceof Temporal.PlainDate ? a : Temporal.PlainDate.from(a)
-    const end = b instanceof Temporal.PlainDate ? b : Temporal.PlainDate.from(b)
+    const start =
+      a instanceof Temporal.PlainDate ? a : Temporal.PlainDate.from(a);
+    const end =
+      b instanceof Temporal.PlainDate ? b : Temporal.PlainDate.from(b);
     const daysTillStart = today.until(start).total({ unit: "days" });
     const daysTillEnd = today.until(end).total({ unit: "days" });
     const time =
@@ -42,10 +44,25 @@ export const infoForDateRange = (
       time,
       label:
         time === "present"
-          ? `ещё ${daysTillEnd} дней`
+          ? pluralize(
+              daysTillEnd,
+              `ещё ${daysTillEnd} день`,
+              `ещё ${daysTillEnd} дня`,
+              `ещё ${daysTillEnd} дней`,
+            )
           : time === "future"
-            ? `через ${daysTillStart} дней`
-            : `${Math.abs(daysTillEnd)} дней назад`,
+            ? pluralize(
+                daysTillStart,
+                `до начала ${daysTillStart} день`,
+                `до начала ${daysTillStart} дня`,
+                `до начала ${daysTillStart} дней`,
+              )
+            : pluralize(
+                -daysTillEnd,
+                `${-daysTillEnd} день назад`,
+                `${-daysTillEnd} дня назад`,
+                `${-daysTillEnd} дней назад`,
+              ),
     };
   } catch (err) {
     console.error(err);
@@ -63,13 +80,19 @@ export const infoForDateRange = (
 export const plainDatesForFilter = (
   from: Temporal.PlainDate | null,
   to: Temporal.PlainDate | null,
-): Filters['date'] => {
-  const out: Filters['date'] = {}
+): Filters["date"] => {
+  const out: Filters["date"] = {};
   if (from) {
-    out.start_date = from.toPlainDateTime("00:00:00").toString()
+    out.start_date = from.toPlainDateTime("00:00:00").toString();
   }
   if (to) {
-    out.end_date = to.toPlainDateTime("23:59:59").toString()
+    out.end_date = to.toPlainDateTime("23:59:59").toString();
   }
-  return out
+  return out;
+};
+
+export function pluralize<T>(n: number, one: T, few: T, many: T): T {
+  if (n % 10 === 1 && n % 100 !== 11) return one;
+  if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return few;
+  return many;
 }

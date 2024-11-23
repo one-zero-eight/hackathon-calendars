@@ -22,38 +22,23 @@ const ageText = (min?: number | null, max?: number | null) => {
   return "";
 };
 
-const monthName = (m: number) => {
-  switch (m) {
-    case 1:
-      return "ЯНВ";
-    case 2:
-      return "ФЕВ";
-    case 3:
-      return "МАР";
-    case 4:
-      return "АПР";
-    case 5:
-      return "МАЙ";
-    case 6:
-      return "ИЮН";
-    case 7:
-      return "ИЮЛ";
-    case 8:
-      return "АВГ";
-    case 9:
-      return "СЕН";
-    case 10:
-      return "ОКТ";
-    case 11:
-      return "НОЯ";
-    case 12:
-      return "ДЕК";
-  }
-  return "";
-};
+const MONTH_NAMES: Record<number, string> = {
+  1: "ЯНВ",
+  2: "ФЕВ",
+  3: "МАР",
+  4: "АПР",
+  5: "МАЙ",
+  6: "ИЮН",
+  7: "ИЮЛ",
+  8: "АВГ",
+  9: "СЕН",
+  10: "ОКТ",
+  11: "НОЯ",
+  12: "ДЕК",
+}
 
 const plainDateStr = (d: Temporal.PlainDate) =>
-  `${d.day} ${monthName(d.month)}`;
+  `${d.day} ${MONTH_NAMES[d.month]}`;
 
 export function EventCard({ event }: { event: Event }) {
   const { data: sports } = $api.useQuery("get", "/sports/");
@@ -126,9 +111,11 @@ export function EventCard({ event }: { event: Event }) {
           {event.location.map((loc, i) => (
             <a
               href={`https://yandex.ru/maps/?text=${encodeURIComponent(locationText(loc))}`}
+              target="_blank"
+              rel="noreferrer"
             >
               <Badge
-                className="flex items-center gap-1 bg-yellow-100 text-xs hover:bg-orange-200"
+                className="flex items-center gap-1 text-xs underline hover:text-blue-700"
                 variant="outline"
                 key={i}
               >

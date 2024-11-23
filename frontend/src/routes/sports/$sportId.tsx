@@ -43,7 +43,7 @@ function RouteComponent() {
           date: plainDatesForFilter(Temporal.Now.plainDateISO(), null),
           discipline: [{ sport: sport?.sport ?? "" }],
         },
-        pagination: { page_size: 30, page_no: 1 },
+        pagination: { page_size: 100, page_no: 1 },
         sort: {
           date: "asc",
         },
