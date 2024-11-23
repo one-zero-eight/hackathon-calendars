@@ -11,6 +11,8 @@ class SportSchema(BaseSchema):
     "Описание спорта"
     disciplines: list[str]
     "Названия дисциплин"
+    page: int | None = None
+    "Страница в календаре МинСпорта"
 
 
 class Sport(SportSchema, CustomDocument):

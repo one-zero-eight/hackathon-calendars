@@ -61,6 +61,9 @@ class EventSchema(BaseSchema):
     participant_count: int | None = None
     "Количество участников"
 
+    page: int | None = None
+    "Страница в календаре МинСпорта"
+
 
 class Event(EventSchema, CustomDocument):
     class Settings:
