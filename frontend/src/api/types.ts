@@ -520,6 +520,11 @@ export interface components {
              * @description Количество участников
              */
             participant_count?: number | null;
+            /**
+             * Page
+             * @description Страница в календаре МинСпорта
+             */
+            page?: number | null;
         };
         /** Event */
         "Event-Output": {
@@ -590,6 +595,11 @@ export interface components {
              * @description Количество участников
              */
             participant_count: number | null;
+            /**
+             * Page
+             * @description Страница в календаре МинСпорта
+             */
+            page: number | null;
         };
         /** EventLocation */
         EventLocation: {
@@ -810,6 +820,11 @@ export interface components {
              * @description Названия дисциплин
              */
             disciplines: string[];
+            /**
+             * Page
+             * @description Страница в календаре МинСпорта
+             */
+            page?: number | null;
         };
         /** Sport */
         "Sport-Output": {
@@ -836,6 +851,11 @@ export interface components {
              * @description Названия дисциплин
              */
             disciplines: string[];
+            /**
+             * Page
+             * @description Страница в календаре МинСпорта
+             */
+            page: number | null;
         };
         /** SportNotification */
         SportNotification: {
