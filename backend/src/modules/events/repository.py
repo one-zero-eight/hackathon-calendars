@@ -28,6 +28,13 @@ class EventsRepository:
         if not res.acknowledged:
             return False
         return True
+    
+    async def get_random_event(self) -> Event | None:
+        random_docs = await Event.aggregate([
+        {"$sample": {"size": 1}}  # Randomly sample one document
+    ]).to_list(length=1)
+        return random_docs[0] if random_docs else None
+
 
     async def read_with_filters(
         self, filters: Filters, sort: Sort, pagination: Pagination, count: bool = False
