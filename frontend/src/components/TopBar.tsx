@@ -15,11 +15,14 @@ export function TopBar() {
   return (
     <div className="flex h-12 w-full justify-between border-b-[1px]">
       <div className="flex items-center gap-2 px-2">
-        <Button asChild variant="ghost">
+        <Button asChild variant="link">
           <Link to="/">Главная</Link>
         </Button>
-        <Button asChild variant="ghost">
-          <Link to="/search">Мероприятия</Link>
+        <Button asChild variant="link">
+          <Link to="/calendar">Календарь</Link>
+        </Button>
+        <Button asChild variant="link">
+          <Link to="/search">Поиск</Link>
         </Button>
       </div>
 

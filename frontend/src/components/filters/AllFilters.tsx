@@ -10,12 +10,14 @@ export function AllFilters({
   disabled,
   filters,
   onChange,
-  className
+  className,
+  exclude = [],
 }: {
   disabled?: boolean;
   filters: Filters;
   onChange: (v: Filters) => void;
-  className?: string
+  className?: string;
+  exclude?: "date"[];
 }) {
   function getOnChange<K extends keyof Filters>(
     k: K,
@@ -34,17 +36,19 @@ export function AllFilters({
         onChange={getOnChange("discipline")}
       />
       <LocationFilter
-        disabled={disabled} 
+        disabled={disabled}
         label="Место проведения"
         value={filters.location}
-        onChange={getOnChange('location')}
+        onChange={getOnChange("location")}
       />
-      <DatesFilter
-        disabled={disabled}
-        label="Даты проведения"
-        value={filters.date}
-        onChange={getOnChange('date')}
-      />
+      {!exclude.includes("date") && (
+        <DatesFilter
+          disabled={disabled}
+          label="Даты проведения"
+          value={filters.date}
+          onChange={getOnChange("date")}
+        />
+      )}
       <MinMaxFilter
         disabled={disabled}
         label="Количество участников"
@@ -61,7 +65,7 @@ export function AllFilters({
         disabled={disabled}
         label="Пол"
         value={filters.gender}
-        onChange={getOnChange('gender')}
+        onChange={getOnChange("gender")}
       />
     </div>
   );
