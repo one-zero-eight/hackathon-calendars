@@ -22,7 +22,7 @@ export function MinMaxFilter(
           disabled={disabled}
           type="number"
           min={0}
-          value={value?.min || undefined}
+          value={value?.min || ''}
           onChange={(e) => {
             handleMinChange(e.target.value ? Number(e.target.value) : null);
           }}
@@ -34,7 +34,7 @@ export function MinMaxFilter(
           disabled={disabled}
           type="number"
           min={0}
-          value={value?.max || undefined}
+          value={value?.max || ''}
           onChange={(e) => {
             handleMaxChange(e.target.value ? Number(e.target.value) : null);
           }}
