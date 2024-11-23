@@ -19,8 +19,8 @@ from src.modules.notifies.scheams import Filter
 from src.storages.mongo import document_models
 
 WAIT_MIN = 0.5
-VAPID_PUBLIC_KEY = "xVLE6LEtxkLINzD3kquyigrciLm1ATuYQtRL2zWPs336t2oqA3Ed0VJZrFAsmQ"
-VAPID_PRIVATE_KEY = "nH5j_32DlJrEfnWjLa2QggSYxV4kbP070gcy5ojCXTY"
+VAPID_PUBLIC_KEY = "BAijnuNwlpKT6Qcl__gPDGhzbCBtb-bYRPbg_vCiI9pLM7CCx1jQYHaoUyd0ulc0or05gJjx8fs-jljvnQi86V8"
+VAPID_PRIVATE_KEY = "P7dbG51eTBjobtrUa7S1tsShoRszG-fIMZ67-zWD75U"
 
 
 async def setup_database() -> AsyncIOMotorClient:
