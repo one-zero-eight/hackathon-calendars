@@ -109,14 +109,18 @@ export function EventCard({ event }: { event: Event }) {
         <h4 className="text-xl font-bold">{event.title}</h4>
         <div className="flex gap-1">
           {event.location.map((loc, i) => (
-            <Badge
-              className="flex items-center gap-1 text-xs"
-              variant="outline"
-              key={i}
+            <a
+              href={`https://yandex.ru/maps/?text=${encodeURIComponent(locationText(loc))}`}
             >
-              <MapPin size={18} />
-              <span>{locationText(loc)}</span>
-            </Badge>
+              <Badge
+                className="flex items-center gap-1 bg-yellow-100 text-xs hover:bg-orange-200"
+                variant="outline"
+                key={i}
+              >
+                <MapPin size={18} />
+                <span>{locationText(loc)}</span>
+              </Badge>
+            </a>
           ))}
           {event.participant_count && (
             <Badge
