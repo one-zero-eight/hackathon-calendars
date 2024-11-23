@@ -18,7 +18,9 @@ from src.modules.notifies.repository import notification_repository
 from src.modules.notifies.scheams import Filter
 from src.storages.mongo import document_models
 
-WAIT_MIN = 2
+WAIT_MIN = 0.5
+VAPID_PUBLIC_KEY = "xVLE6LEtxkLINzD3kquyigrciLm1ATuYQtRL2zWPs336t2oqA3Ed0VJZrFAsmQ"
+VAPID_PRIVATE_KEY = "nH5j_32DlJrEfnWjLa2QggSYxV4kbP070gcy5ojCXTY"
 
 
 async def setup_database() -> AsyncIOMotorClient:
@@ -46,8 +48,8 @@ async def setup_database() -> AsyncIOMotorClient:
 
 
 async def push_notification():
-    print("STARTING PUSH_JOB")
     while True:
+        print("🚀 Starting PUSH JOB")
         notifications = await notification_repository.list_all_valid_notifications()
         for notification in notifications:
             sent_notification_number = len(notification.event_dates)
@@ -72,13 +74,12 @@ async def push_notification():
                         webpush(
                             subscription_info=notification.subscription_info,
                             data=json.dumps({"title": "Напоминание", "body": outMsg}),
-                            # TODO: add keys
-                            vapid_private_key="KEY",
-                            vapid_claims="KEY",
+                            vapid_private_key=VAPID_PRIVATE_KEY,
+                            vapid_claims=VAPID_PUBLIC_KEY,
                         )
-                        print("Success push")
+                        print(f"Success push for user {notification.user_id}")
                     except WebPushException as ex:
-                        print(f"Failed to send push notification: {ex}")
+                        print(f"Failed to send push notification for {notification.user_id}: {ex}")
             if sent_notification_number == 0:
                 if notification.event_title is not None:
                     await notification_repository.make_sent_notifications_by_filter(
@@ -88,7 +89,9 @@ async def push_notification():
                     await notification_repository.make_sent_notifications_by_filter(
                         Filter(sport_title=notification.sport_title, user_id=notification.user_id)
                     )
-        asyncio.sleep(WAIT_MIN * 60)
+
+        print("🚀 PUSH JOB FINISHED")
+        await asyncio.sleep(WAIT_MIN * 60)
 
 
 @asynccontextmanager
