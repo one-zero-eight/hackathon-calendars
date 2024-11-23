@@ -16,6 +16,11 @@ class EventsRepository:
     async def read_all(self) -> list[Event] | None:
         return await Event.all().to_list()
 
+    async def read_all_locations(self) -> list:
+        s = await Event.get_motor_collection().aggregate([{"$project": {"location": 1}}]).to_list()
+        s = [i["location"] for i in s]
+        return s
+
     async def create_many(self, events: list[Event]) -> bool:
         res = await Event.insert_many(events)
         if not res.acknowledged:

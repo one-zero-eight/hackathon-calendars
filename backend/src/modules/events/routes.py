@@ -93,16 +93,32 @@ async def get_all_filters_locations() -> list[LocationsFilterVariants]:
     Get all locations.
     """
     # From all 'location' fields of events, get unique values
-    # TODO: Write Mongo request
     countries: dict[str, dict[str, RegionsFilterVariants]] = {}
-    for event in await events_repository.read_all():
-        for location in event.location:
-            if location.country not in countries:
-                countries[location.country] = {}
-            if location.region not in countries[location.country]:
-                countries[location.country][location.region] = RegionsFilterVariants(region=location.region, cities=[])
-            if location.city not in countries[location.country][location.region].cities:
-                countries[location.country][location.region].cities.append(location.city)
+    unique_locs = set()
+    _ = await events_repository.read_all_locations()
+    for locations in _:
+        for loc in locations:
+            unique_locs.add((loc.get("country"), loc.get("region"), loc.get("city")))
+    unique_locs = sorted(unique_locs, key=lambda x: (x[0], x[1] or "", x[2] or ""))
+
+    for country, region, city in unique_locs:
+        if region is None and city in (
+            "городской округ",
+            "деревня",
+            "железнодорожной станции",
+            "поселок",
+            "поселок городского типа",
+            "село",
+        ):
+            continue
+
+        if country not in countries:
+            countries[country] = {}
+        if region not in countries[country]:
+            countries[country][region] = RegionsFilterVariants(region=region, cities=[])
+        if city not in countries[country][region].cities:
+            countries[country][region].cities.append(city)
+
     return [
         LocationsFilterVariants(
             country=country,
