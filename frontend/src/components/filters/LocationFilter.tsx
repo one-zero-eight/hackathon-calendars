@@ -75,25 +75,31 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
     const flat = [] as FlatLocation[];
     for (const x of data ?? []) {
       const filter = { country: x.country };
-      flat.push({
-        name: filterName(filter),
-        t: "country",
-        filter,
-      });
-      for (const y of x.regions) {
-        const filter = { country: x.country, region: y.region };
+      if (filter.country) {
         flat.push({
           name: filterName(filter),
-          t: "region",
+          t: "country",
           filter,
         });
-        for (const z of y.cities) {
-          const filter = { country: x.country, region: y.region, city: z };
+      }
+      for (const y of x.regions) {
+        const filter = { country: x.country, region: y.region };
+        if (filter.region) {
           flat.push({
             name: filterName(filter),
-            t: "city",
+            t: "region",
             filter,
           });
+        }
+        for (const z of y.cities) {
+          const filter = { country: x.country, region: y.region, city: z };
+          if (filter.city) {
+            flat.push({
+              name: filterName(filter),
+              t: "city",
+              filter,
+            });
+          }
         }
       }
     }
@@ -101,19 +107,20 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
   }, [data]);
 
   const [q, setQ] = useState("");
-  const [qDeb, setQDeb] = useState(q);
+  const [qDeb, setQDeb] = useState("");
   useDebounce(
     () => {
       setQDeb(q);
     },
     500,
-    [q],
+    [q, setQDeb],
   );
 
   const filtered = useMemo(
     () =>
       all
-        .filter(({ name }) => name.toLowerCase().includes(qDeb.toLowerCase()))
+        .filter(({ name }) => name.toLowerCase().includes(qDeb.trim().toLowerCase()))
+        .slice(0, 300)
         .map((x) => ({
           ...x,
           selected: selected.some((s) => s.name === x.name),
@@ -151,7 +158,7 @@ export function LocationFilter(props: FilterBaseProps<Filters["location"]>) {
               placeholder="Страна, регион, город..."
               className="h-9"
               value={q}
-              onValueChange={(v) => setQ(v.trim())}
+              onValueChange={setQ}
             />
             <CommandList>
               <CommandEmpty>Ничего не найдено</CommandEmpty>
