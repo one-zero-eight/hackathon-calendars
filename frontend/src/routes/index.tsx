@@ -2,106 +2,161 @@ import { $api } from "@/api";
 import { SportBadge } from "@/components/SportBadge";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
+import Marquee from "react-fast-marquee";
+import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Temporal } from "temporal-polyfill";
+import { ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });
+
+const QUICKLINKS = {
+  "1-month": {
+    date: plainDatesForFilter(
+      Temporal.Now.plainDateISO(),
+      Temporal.Now.plainDateISO().add({ days: 30 }),
+    ),
+  },
+  "3-months": {
+    date: plainDatesForFilter(
+      Temporal.Now.plainDateISO(),
+      Temporal.Now.plainDateISO().add({ days: 30 * 3 }),
+    ),
+  },
+  "6-months": {
+    date: plainDatesForFilter(
+      Temporal.Now.plainDateISO(),
+      Temporal.Now.plainDateISO().add({ days: 30 * 6 }),
+    ),
+  },
+};
 
 function RouteComponent() {
   const navigate = useNavigate();
   const { data: sports } = $api.useQuery("get", "/sports/");
   const [search, setSearch] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleQuicklinkClick = (q: keyof typeof QUICKLINKS) => {
     navigate({
       to: "/search",
-      search: { filters: { query: search } },
+      search: {
+        filters: QUICKLINKS[q],
+      },
     });
   };
 
+  const [sports1, sports2, sports3] = useMemo(() => {
+    if (!sports) return [[], [], []];
+
+    const shuffled = sports.slice().sort(() => Math.random() - 0.5);
+    const partSize = Math.ceil(sports.length / 3);
+    return [
+      shuffled.slice(0, partSize),
+      shuffled.slice(partSize, partSize * 2),
+      shuffled.slice(partSize * 2),
+    ];
+  }, [sports]);
+
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <form onSubmit={onSubmit}>
-        <div className="flex h-[50vh] flex-col items-center justify-center gap-6">
-          <h2 className="text-center text-4xl">
-            Найди любое спортивное мероприятие!
-          </h2>
-          <div className="flex w-full max-w-[600px] gap-2">
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Поиск"
-              className="max-w-[600px]"
-            />
-            <Button type="submit" variant="default">
-              Найти
-            </Button>
-          </div>
+    <main className="w-full">
+      <section className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center justify-center">
+        <h1 className="mb-4 text-center text-6xl font-medium tracking-tight">
+          Единый Календарь Спорта
+        </h1>
+        <h2 className="text-center text-2xl opacity-80">
+          Все спортивные мероприятия в одном месте.
+        </h2>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            navigate({
+              to: "/search",
+              search: { filters: { query: search } },
+            });
+          }}
+          className="mt-10 flex w-full max-w-[600px] gap-2"
+        >
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Название мероприятия, вид спорта, город..."
+            className="max-w-[600px]"
+          />
+          <Button type="submit" variant="default">
+            Найти
+          </Button>
+        </form>
 
-          <div className="flex w-full max-w-[600px] flex-wrap justify-center gap-2">
-            {/* TODO: Add search query */}
-            <Button asChild type="button" variant="secondary">
-              <Link
-                to="/search"
-                search={{
-                  filters: {
-                    date: {
-                      start_date: new Date().toISOString(),
-                      end_date: new Date(
-                        new Date().getTime() + 1000 * 60 * 60 * 24 * 30, // 30 days
-                      ).toISOString(),
-                    },
-                  },
-                }}
-              >
-                На ближайший месяц
-              </Link>
-            </Button>
-            <Button asChild type="button" variant="secondary">
-              <Link
-                to="/search"
-                search={{
-                  filters: {
-                    date: {
-                      start_date: new Date().toISOString(),
-                      end_date: new Date(
-                        new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 3, // 90 days
-                      ).toISOString(),
-                    },
-                  },
-                }}
-              >
-                На 3 месяца
-              </Link>
-            </Button>
-            <Button asChild type="button" variant="secondary">
-              <Link
-                to="/search"
-                search={{
-                  filters: {
-                    date: {
-                      start_date: new Date().toISOString(),
-                      end_date: new Date(
-                        new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 6, // 180 days
-                      ).toISOString(),
-                    },
-                  },
-                }}
-              >
-                На полгода
-              </Link>
-            </Button>
-          </div>
+        <div className="mt-4 flex gap-2">
+          <Button
+            variant="secondary"
+            onClick={() => handleQuicklinkClick("1-month")}
+          >
+            На ближайший месяц
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => handleQuicklinkClick("3-months")}
+          >
+            На 3 месяца
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => handleQuicklinkClick("6-months")}
+          >
+            На 6 месяцев
+          </Button>
         </div>
-      </form>
+      </section>
 
-      <h2 className="text-center text-2xl">Выбери свой вид спорта</h2>
-      <div className="flex flex-wrap justify-center gap-2">
-        {sports?.map((sport) => (<SportBadge key={sport.id} name={sport.sport} id={sport.id} />))}
-      </div>
-    </div>
+      <section className="py-4">
+        <h2 className="text-center text-2xl font-medium">
+          Выбери свой вид спорта
+        </h2>
+        <div className="flex flex-col gap-2 my-6">
+          <Marquee direction="left" speed={20} pauseOnHover>
+            {sports1.map((sport) => (
+              <SportBadge
+                key={sport.id}
+                name={sport.sport}
+                id={sport.id}
+                className="mx-2"
+              />
+            ))}
+          </Marquee>
+          <Marquee direction="right" speed={20} pauseOnHover>
+            {sports2.map((sport) => (
+              <SportBadge
+                key={sport.id}
+                name={sport.sport}
+                id={sport.id}
+                className="mx-2"
+              />
+            ))}
+          </Marquee>
+          <Marquee direction="left" speed={20} pauseOnHover>
+            {sports3.map((sport) => (
+              <SportBadge
+                key={sport.id}
+                name={sport.sport}
+                id={sport.id}
+                className="mx-2"
+              />
+            ))}
+          </Marquee>
+        </div>
+        <div className="flex justify-center">
+          <Button asChild>
+            <Link to="/sports">
+              <span>Все виды спорта</span>
+              <ChevronRight />
+            </Link>
+          </Button>
+        </div>
+      </section>
+    </main>
   );
 }

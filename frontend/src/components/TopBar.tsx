@@ -13,7 +13,7 @@ export function TopBar() {
   });
 
   return (
-    <div className="flex h-12 w-full justify-between border-b-[1px]">
+    <div className="flex h-[--header-height] w-full justify-between border-b-[1px]">
       <div className="flex items-center gap-2 px-2">
         <Button asChild variant="link">
           <Link to="/" activeProps={{ style: { backgroundColor: "#ddd" } }}>

@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Temporal } from "temporal-polyfill";
-import { Location } from "./types";
+import { Filters, Location } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -59,3 +59,17 @@ export const infoForDateRange = (
     };
   }
 };
+
+export const plainDatesForFilter = (
+  from: Temporal.PlainDate | null,
+  to: Temporal.PlainDate | null,
+): Filters['date'] => {
+  const out: Filters['date'] = {}
+  if (from) {
+    out.start_date = from.toPlainDateTime("00:00:00").toString()
+  }
+  if (to) {
+    out.end_date = to.toPlainDateTime("23:59:59").toString()
+  }
+  return out
+}
