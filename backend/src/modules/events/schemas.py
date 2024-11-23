@@ -1,6 +1,7 @@
 import datetime
 from enum import StrEnum
 
+from beanie import PydanticObjectId
 from pydantic import BaseModel
 
 
@@ -58,6 +59,8 @@ class Filters(BaseModel):
     "Фильтр по возрасту участников"
     participant_count: MinMaxFilter | None = None
     "Фильтр по количеству участников соревнования"
+    by_ids: list[PydanticObjectId] | None = None
+    "Фильтр по ID событий (применяется только он, если указан)"
 
 
 class Order(StrEnum):

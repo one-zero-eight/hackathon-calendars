@@ -31,6 +31,12 @@ class EventsRepository:
     async def read_with_filters(
         self, filters: Filters, sort: Sort, pagination: Pagination, count: bool = False
     ) -> list[Event] | int:
+        if filters.by_ids:
+            query = Event.find({"_id": {"$in": filters.by_ids}})
+            if count:
+                return await query.count()
+            return await query.to_list()
+
         query = Event.all()
 
         # Apply filters
