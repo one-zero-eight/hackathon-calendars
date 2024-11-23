@@ -69,7 +69,7 @@ app.add_middleware(
     secret_key=settings.session_secret_key.get_secret_value(),
     session_cookie=session_cookie,
     max_age=14 * 24 * 60 * 60,  # 14 days, in seconds
-    path=settings.app_root_path or "/",
+    path="/",
     same_site="lax",
     https_only=True if settings.environment == Environment.PRODUCTION else False,
     domain=None,
