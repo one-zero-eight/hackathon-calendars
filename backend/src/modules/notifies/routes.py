@@ -41,6 +41,7 @@ async def create_notification(notification_create: NotificationCreateReq, auth: 
 
         notification_to_insert = Notification(
             event_title=event.title,
+            sport_title=event.sport,
             user_id=user_id,
             event_id=event.id,
             event_dates=[event.start_date],
