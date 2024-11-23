@@ -148,6 +148,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/events/search/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Count Events
+         * @description Count filtered events.
+         */
+        post: operations["events_count_events"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/events/search/count-by-month": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Count Events By Month
+         * @description Count filtered events by months.
+         */
+        post: operations["events_count_events_by_month"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/events/search/filters/locations": {
         parameters: {
             query?: never;
@@ -226,6 +266,26 @@ export interface paths {
         get: operations["sports_get_sport"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sports/update_descriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Update Descriptions
+         * @description Update descriptions of sports.
+         */
+        post: operations["sports_update_descriptions"];
         delete?: never;
         options?: never;
         head?: never;
@@ -536,7 +596,7 @@ export interface components {
         /** RegionsFilterVariants */
         RegionsFilterVariants: {
             /** Region */
-            region: string;
+            region: string | null;
             /** Cities */
             cities: string[];
         };
@@ -572,6 +632,11 @@ export interface components {
              */
             sport: string;
             /**
+             * Description
+             * @description Описание спорта
+             */
+            description?: string | null;
+            /**
              * Disciplines
              * @description Названия дисциплин
              */
@@ -592,6 +657,11 @@ export interface components {
              * @description Название вида спорта
              */
             sport: string;
+            /**
+             * Description
+             * @description Описание спорта
+             */
+            description: string | null;
             /**
              * Disciplines
              * @description Названия дисциплин
@@ -926,6 +996,88 @@ export interface operations {
             };
         };
     };
+    events_count_events: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Filters"];
+            };
+        };
+        responses: {
+            /** @description Count events */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": number;
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    events_count_events_by_month: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Filters"];
+            };
+        };
+        responses: {
+            /** @description Count events by months */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number;
+                    };
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     events_get_all_filters_locations: {
         parameters: {
             query?: never;
@@ -1085,7 +1237,7 @@ export interface operations {
             };
         };
     };
-    notifies_create_notification: {
+    sports_update_descriptions: {
         parameters: {
             query?: never;
             header?: never;
@@ -1094,11 +1246,13 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["NotificationCreate"];
+                "application/json": {
+                    [key: string]: string;
+                };
             };
         };
         responses: {
-            /** @description Successful Response */
+            /** @description Update descriptions */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1125,12 +1279,52 @@ export interface operations {
             };
         };
     };
+    notifies_create_notification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     notifies_get_notification: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                notification_id: number;
+                notification_id: string;
             };
             cookie?: never;
         };
