@@ -109,20 +109,28 @@ def parse_location(df):
                     splitted = list(filter(None, splitted))
                     if len(splitted) == 2:
                         locations.append(
-                            Location(country="Россия", region=splitted[0], city=splitted[1])
+                            Location(
+                                country="Россия", region=splitted[0], city=splitted[1]
+                            )
                         )
                     elif len(splitted) == 1:
                         if splitted[0].isupper():
-                            locations.append(Location(country="Россия", region=splitted[0]))
+                            locations.append(
+                                Location(country="Россия", region=splitted[0])
+                            )
                         else:
-                            locations.append(Location(country="Россия", city=splitted[0]))
+                            locations.append(
+                                Location(country="Россия", city=splitted[0])
+                            )
                     else:
                         # may be several regions (uppercase)
                         # may be several cities (not uppercase)
                         # may be region and several cities
                         if all(x.isupper() for x in splitted):
                             for region in splitted:
-                                locations.append(Location(country="Россия", region=region))
+                                locations.append(
+                                    Location(country="Россия", region=region)
+                                )
                         elif all(not x.isupper() for x in splitted):
                             for city in splitted:
                                 locations.append(Location(country="Россия", city=city))
@@ -162,6 +170,8 @@ def parse_location(df):
                         locations.append(Location(country=country, city=place))
 
         for loc in locations:
+            loc.country = loc.country.capitalize()
+
             if loc.region:
                 loc.region = loc.region.strip(",")
             if loc.city:
