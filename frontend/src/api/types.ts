@@ -84,6 +84,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/favorites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Favorites */
+        put: operations["users_update_favorites"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/events/random-event": {
         parameters: {
             query?: never;
@@ -868,6 +885,11 @@ export interface components {
              */
             id: string;
         };
+        /** UpdateFavoriteReq */
+        UpdateFavoriteReq: {
+            /** Favorite Ids */
+            favorite_ids: string[];
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -886,6 +908,8 @@ export interface components {
             id: string;
             /** Login */
             login: string;
+            /** Favorites */
+            favorites: string[];
         };
     };
     responses: never;
@@ -920,6 +944,7 @@ export type SchemaSort = components['schemas']['Sort'];
 export type SchemaSportInput = components['schemas']['Sport-Input'];
 export type SchemaSportOutput = components['schemas']['Sport-Output'];
 export type SchemaSportNotification = components['schemas']['SportNotification'];
+export type SchemaUpdateFavoriteReq = components['schemas']['UpdateFavoriteReq'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaViewUser = components['schemas']['ViewUser'];
 export type $defs = Record<string, never>;
@@ -1053,6 +1078,46 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    users_update_favorites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFavoriteReq"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string[];
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };

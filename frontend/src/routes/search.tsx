@@ -3,6 +3,7 @@ import { EventCard } from "@/components/EventCard.tsx";
 import { ExportFiltersToCalendar } from "@/components/ExportFiltersToCalendar.tsx";
 import { AllFilters } from "@/components/filters/AllFilters";
 import { GetUrlToFilters } from "@/components/GetUrlToFilters.tsx";
+import { SaveFilters } from "@/components/SaveFilters.tsx";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -158,6 +159,7 @@ function RouteComponent() {
           />
           <Separator />
           <div className="flex flex-col gap-2">
+            <SaveFilters filters={actualFilters} sort={{}} />
             <GetUrlToFilters filters={actualFilters} sort={{}} />
             <ExportFiltersToCalendar filters={actualFilters} />
           </div>

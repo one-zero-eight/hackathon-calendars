@@ -5,6 +5,7 @@ import { NotificationsDialog } from "@/components/NotificationsDialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Card } from "@/components/ui/card.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
+import { useQueries } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, Check, CircleX } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
@@ -20,6 +21,15 @@ function RouteComponent() {
     "/notify/my-subscriptions",
   );
   const { data: sports } = $api.useQuery("get", "/sports/");
+
+  const selections = useQueries({
+    queries:
+      me?.favorites?.map((v) =>
+        $api.queryOptions("get", "/events/search/share/{selection_id}", {
+          params: { path: { selection_id: v } },
+        }),
+      ) ?? [],
+  });
 
   const [notificationPermission, setNotificationPermission] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -131,6 +141,41 @@ function RouteComponent() {
                 <div className="text-gray-500">
                   Нет настроенных уведомлений. Подпишитесь на какое-нибудь
                   событие в Поиске или выберите понравившийся вид спорта.
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+
+        <Card className="flex w-full flex-col gap-2 p-4">
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">Мои подборки</h2>
+            <div className="flex flex-col gap-2">
+              {selections?.length ? (
+                selections?.map(
+                  (v, i) =>
+                    v?.data && (
+                      <Fragment key={v.data.id}>
+                        <div className="flex items-center gap-4 p-2">
+                          <div>
+                            <Link
+                              to="/search"
+                              search={{
+                                share: v.data.id,
+                              }}
+                              className="underline"
+                            >
+                              Подборка # {i + 1}
+                            </Link>
+                          </div>
+                        </div>
+                        {i < selections.length - 1 && <Separator />}
+                      </Fragment>
+                    ),
+                )
+              ) : (
+                <div className="text-gray-500">
+                  Нет подборок. Сохраните фильтры на странице поиска.
                 </div>
               )}
             </div>
