@@ -12,7 +12,7 @@ export const Route = createFileRoute("/auth/login")({
     search: Record<string, unknown>,
   ): { redirectTo?: string } => {
     return {
-      redirectTo: (search.redirect as string | undefined) || undefined,
+      redirectTo: (search.redirectTo as string | undefined) || undefined,
     };
   },
 });
