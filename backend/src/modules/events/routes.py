@@ -85,7 +85,7 @@ async def search_events(filters: Filters, sort: Sort, pagination: Pagination) ->
         return 2
 
     events = await events_repository.read_with_filters(filters, sort, pagination)
-    if not sort.date:
+    if not sort.date and not sort.age and not sort.participant_count:
         # sort default: current events, future events, past events
         events = sorted(events, key=key)
 
