@@ -9,6 +9,8 @@ class CreateUser(BaseSchema):
     login: str
     password: str
 
+class UpdateFavoriteReq(BaseSchema):
+    favorite_ids: list[PydanticObjectId]
 
 class ViewUser(BaseSchema):
     id: PydanticObjectId
