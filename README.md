@@ -50,5 +50,5 @@
    ```
 6. Запустить проект.
    ```
-   docker compose up -d
+   docker compose up -d --build
    ```
