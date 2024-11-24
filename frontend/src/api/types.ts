@@ -84,6 +84,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/events/random-event": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Random Event */
+        get: operations["events_get_random_event"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/events/": {
         parameters: {
             query?: never;
@@ -660,13 +677,6 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** Keys */
-        Keys: {
-            /** P256Dh */
-            p256dh: string;
-            /** Auth */
-            auth: string;
-        };
         /** LocationFilter */
         LocationFilter: {
             /** Country */
@@ -708,10 +718,8 @@ export interface components {
             sport_title: string | null;
             /** Sport Id */
             sport_id: string | null;
-            /** Endpoint */
-            endpoint: string;
-            /** Keys */
-            keys: Record<string, never>;
+            /** Subscription Info */
+            subscription_info: Record<string, never>;
             /** Event Dates */
             event_dates: string[];
             /**
@@ -729,13 +737,8 @@ export interface components {
         NotificationCreateReq: {
             /** Notification Type */
             notification_type: components["schemas"]["EventNotification"] | components["schemas"]["SportNotification"];
-            notification_options: components["schemas"]["NotificationOption"];
-        };
-        /** NotificationOption */
-        NotificationOption: {
-            /** Endpoint */
-            endpoint: string;
-            keys: components["schemas"]["Keys"];
+            /** Notification Options */
+            notification_options: Record<string, never>;
         };
         /**
          * Order
@@ -903,13 +906,11 @@ export type SchemaEventNotification = components['schemas']['EventNotification']
 export type SchemaFilters = components['schemas']['Filters'];
 export type SchemaGender = components['schemas']['Gender'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
-export type SchemaKeys = components['schemas']['Keys'];
 export type SchemaLocationFilter = components['schemas']['LocationFilter'];
 export type SchemaLocationsFilterVariants = components['schemas']['LocationsFilterVariants'];
 export type SchemaMinMaxFilter = components['schemas']['MinMaxFilter'];
 export type SchemaNotification = components['schemas']['Notification'];
 export type SchemaNotificationCreateReq = components['schemas']['NotificationCreateReq'];
-export type SchemaNotificationOption = components['schemas']['NotificationOption'];
 export type SchemaOrder = components['schemas']['Order'];
 export type SchemaPagination = components['schemas']['Pagination'];
 export type SchemaRegionsFilterVariants = components['schemas']['RegionsFilterVariants'];
@@ -1044,6 +1045,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Unable to verify credentials OR Credentials not provided */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    events_get_random_event: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Event-Output"];
                 };
             };
             /** @description Unable to verify credentials OR Credentials not provided */

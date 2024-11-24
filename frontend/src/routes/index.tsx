@@ -4,6 +4,7 @@ import { SportBadge } from "@/components/SportBadge";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Filters, Sort } from "@/lib/types";
 import { plainDatesForFilter } from "@/lib/utils";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -44,6 +45,7 @@ function RouteComponent() {
   const { data: eventsTotal } = $api.useQuery("post", "/events/search/count", {
     body: {},
   });
+  const { data: randomEvent } = $api.useQuery("get", "/events/random-event");
   const [search, setSearch] = useState("");
 
   const handleQuicklinkClick = (q: keyof typeof QUICKLINKS) => {
@@ -214,8 +216,16 @@ function RouteComponent() {
             Temporal.PlainDate.from("2024-12-31"),
           ),
         }}
-        shuffle
       />
+
+      <section className="my-[64px]">
+        <h2 className="mb-6 text-center text-2xl font-medium">"Мне повезёт"</h2>
+        {randomEvent ? (
+          <EventCard event={randomEvent} className="mx-auto w-[900px]" />
+        ) : (
+          <Skeleton className="mx-auto h-[225px] w-[900px]" />
+        )}
+      </section>
     </main>
   );
 }
