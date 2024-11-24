@@ -2,7 +2,7 @@
 
 **Развернутый проект: https://hack.innohassle.ru**
 
-- Видео-презентация: [YouTube](https://youtu.be/YL-bDoUrjOY), [RuTube](https://rutube.ru/video/private/b9e11f2766f89993ddaa108f1a8a7148/?p=tD09_dR3a__N94qwzTMwWA)
+- Видео-презентация: [YouTube](https://youtu.be/YL-bDoUrjOY), [RuTube](https://rutube.ru/video/private/b9e11f2766f89993ddaa108f1a8a7148/?p=tD09_dR3a__N94qwzTMwWA), [Яндекс.Диск](https://disk.yandex.ru/i/18k2LXvQEaJm-Q)
 - Видео-демонстрация: [Мини-версия](./мини-демо.mp4)
 - Презентация: [PDF в этом репозитории](./Презентация%20Университет%20Иннополис%20one_zero_eight.pdf) или на [Figma Slides](https://www.figma.com/slides/w4Ewmxl75Ts0SdHtxk2dRX/%D0%9F%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F-one_zero_eight-%D0%A3%D0%BD%D0%B8%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%82%D0%B5%D1%82-%D0%98%D0%BD%D0%BD%D0%BE%D0%BF%D0%BE%D0%BB%D0%B8%D1%81?node-id=1-539&t=qIXakFIXm2mqjNwM-1)
 - Репозиторий: https://github.com/hackathonsrus/pp_50040_pfo_ta_onezeroeight_69
