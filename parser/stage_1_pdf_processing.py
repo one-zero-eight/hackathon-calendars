@@ -407,9 +407,9 @@ if __name__ == "__main__":
 
     pdf = pdfplumber.open(pdf_path)
 
-    # results_df = pd.DataFrame(anchoring(pdf))
-    # print(results_df.head())
-    # results_df.to_csv("label_locations.csv", index=False, float_format="%.2f")
+    results_df = pd.DataFrame(anchoring(pdf))
+    print(results_df.head())
+    results_df.to_csv("label_locations.csv", index=False, float_format="%.2f")
     results_df = pd.read_csv("label_locations.csv")
     postprocessed_df = postprocess(results_df)
     print(postprocessed_df.head())
