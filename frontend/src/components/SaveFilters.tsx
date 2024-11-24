@@ -4,6 +4,7 @@ import { SchemaSort } from "@/api/types.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { Filters } from "@/lib/types.ts";
 import { useQueries } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 export function SaveFilters({
@@ -14,6 +15,7 @@ export function SaveFilters({
   sort: SchemaSort | undefined;
 }) {
   const { data: me, refetch } = useMe();
+  const navigate = useNavigate();
   const { mutateAsync: createShare } = $api.useMutation(
     "post",
     "/events/search/share",
@@ -34,11 +36,15 @@ export function SaveFilters({
   const currentSelection = selections?.find(
     (v) => deepEqual(v.data?.filters, filters) && deepEqual(v.data?.sort, sort),
   );
-  console.log(selections, filters);
-  console.log(currentSelection);
 
   const save = async () => {
-    if (!me) return;
+    if (!me) {
+      navigate({
+        to: "/auth/login",
+        search: { redirectTo: window.location.href },
+      });
+      return;
+    }
 
     if (!currentSelection) {
       const selection = await createShare({
