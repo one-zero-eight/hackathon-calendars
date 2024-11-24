@@ -5,6 +5,14 @@ import { AllFilters } from "@/components/filters/AllFilters";
 import { GetUrlToFilters } from "@/components/GetUrlToFilters.tsx";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Filters } from "@/lib/types";
@@ -28,6 +36,21 @@ const getInitialFilters: () => Filters = () => ({
   date: plainDatesForFilter(Temporal.Now.plainDateISO(), null),
 });
 
+const SORT_PRESETS = {
+  "Сначала ранние": {
+    date: "asc",
+  },
+  "Сначала поздние": {
+    date: "desc",
+  },
+  "Больше участников": {
+    participant_count: "desc",
+  },
+  "Меньше участников": {
+    participant_count: "asc",
+  },
+};
+
 function RouteComponent() {
   const navigate = useNavigate();
   const { filters: routeFilters, share } = Route.useSearch();
@@ -45,6 +68,9 @@ function RouteComponent() {
     { params: { path: { selection_id: share ?? "" } } },
     { enabled: !!share },
   );
+  const [sortPreset, setSortPreset] = useState<
+    keyof typeof SORT_PRESETS | undefined
+  >("Сначала ранние");
 
   useEffect(() => {
     const newFilters = shareFilters?.filters ?? routeFilters;
@@ -99,9 +125,7 @@ function RouteComponent() {
           page_no: 1,
           page_size: 100,
         },
-        sort: {
-          date: "asc",
-        },
+        sort: sortPreset ? SORT_PRESETS[sortPreset] : {},
       },
     },
     { enabled: !filtersChanging && !sharedLoading },
@@ -148,6 +172,22 @@ function RouteComponent() {
             onChange={(e) => handleQueryChange(e.target.value)}
             placeholder="Название, вид спорта, город..."
           />
+          <div className="mt-2">
+            <Select value={sortPreset} onValueChange={setSortPreset as any}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Сортировка" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {Object.keys(SORT_PRESETS).map((preset) => (
+                    <SelectItem key={preset} value={preset}>
+                      {preset}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="flex flex-col gap-4 bg-stone-100 p-4">
           {loading ? (
