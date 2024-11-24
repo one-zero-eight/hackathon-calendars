@@ -4,7 +4,6 @@ import { SchemaSort } from "@/api/types.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { Filters } from "@/lib/types.ts";
 import { useQueries } from "@tanstack/react-query";
-import { deepEqual } from "@tanstack/react-router";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 export function SaveFilters({
@@ -32,8 +31,8 @@ export function SaveFilters({
       ) ?? [],
   });
 
-  const currentSelection = selections?.find((v) =>
-    deepEqual(v?.data?.filters, filters, { partial: true }),
+  const currentSelection = selections?.find(
+    (v) => deepEqual(v.data?.filters, filters) && deepEqual(v.data?.sort, sort),
   );
   console.log(selections, filters);
   console.log(currentSelection);
@@ -79,4 +78,51 @@ export function SaveFilters({
       </Button>
     </>
   );
+}
+
+function deepEqual(obj1: any, obj2: any): boolean {
+  if (
+    typeof obj1 === "string" &&
+    typeof obj2 === "string" &&
+    (obj1 + "Z" === obj2 || obj1 === obj2 + "Z")
+  ) {
+    return true;
+  }
+
+  if (obj1 == obj2) {
+    // Covers primitive values and reference equality
+    return true;
+  }
+
+  if (obj1 == null && obj2 == null) {
+    // Treat null and undefined as equal
+    return true;
+  }
+
+  if (
+    typeof obj1 !== "object" ||
+    typeof obj2 !== "object" ||
+    obj1 === null ||
+    obj2 === null
+  ) {
+    // If one is not an object or if either is null, they're not equal
+    return false;
+  }
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  for (const key of keys1) {
+    if (!keys2.includes(key) && obj1[key] != null && obj2[key] != null) {
+      // Check if both objects have the same keys
+      return false;
+    }
+
+    // Recursively compare values
+    if (!deepEqual(obj1[key], obj2[key])) {
+      return false;
+    }
+  }
+
+  return true;
 }
